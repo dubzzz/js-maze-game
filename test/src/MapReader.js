@@ -26,7 +26,7 @@ describe('Read maps', function() {
 			[ 0,98, 0,-1],
 			[99,97,97, 1]];
 		var reader = new MapReader(raw);
-		reader.getMap().should.be.equal([
+		reader.getMap().should.be.eql([
 			" s b",
 			"e##d"]);
 		done();
@@ -42,8 +42,12 @@ describe('Read maps', function() {
 		Object.keys(doors).length.should.be.equal(3);
 		doors.should.have.keys(1,2,4);
 		
-		doors[1].should.be.equal([7]);
-		doors[2].should.be.equal([8]);
+		doors[1].should.have.length(1);
+		doors[2].should.have.length(1);
+		doors[4].should.have.length(2);
+		
+		doors[1].should.containDeep([7]);
+		doors[2].should.containDeep([8]);
 		doors[4].should.containDeep([10,11]); // order depends on the implementation
 		
 		done();
@@ -57,12 +61,11 @@ describe('Read maps', function() {
 		var buttons = reader.getMappingButtonId();
 		
 		Object.keys(buttons).length.should.be.equal(3);
-		bttons.should.have.keys(7,8,10,11);
+		buttons.should.have.keys(2,3,9);
 		
-		buttons[7].should.be.equal(1);
-		buttons[8].should.be.equal(2);
-		buttons[10].should.be.equal(4);
-		buttons[11].should.be.equal(4);
+		buttons[2].should.be.equal(4);
+		buttons[3].should.be.equal(1);
+		buttons[9].should.be.equal(2);
 		
 		done();
 	});

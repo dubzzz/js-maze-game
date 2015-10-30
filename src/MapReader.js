@@ -60,6 +60,45 @@ var MapReader = function(raw_data) {
 	this.getMap = function() {
 		return map_;
 	};
+
+	var scanCell_ = function(x, y) {
+		var cell = raw_data[y][x];
+		switch (cell) {
+			case 0:
+				return ' ';
+			case CELL_WALL:
+				return '#';
+			case CELL_START:
+				start_ = xyToLinear(x, y, size_x_);
+				return 's';
+			case CELL_END:
+				end_ = xyToLinear(x, y, size_x_);
+				return 'e';
+			default:
+				if (cell > 0) {
+					if (! mapping_id_to_doors_.hasOwnProperty(cell)) {
+						mapping_id_to_doors_[cell] = new Array();
+					}
+					mapping_id_to_doors_[cell].push(xyToLinear(x, y, size_x_));
+					return 'd';
+				}
+				else {
+					mapping_button_to_id_[xyToLinear(x, y, size_x_)] = -cell;
+					return 'b';
+				}
+		}
+		
+	};
+
+	{
+		for (var y = 0 ; y < size_y_ ; ++y) {
+			var map_line = "";
+			for (var x = 0 ; x < size_x_ ; ++x) {
+				map_line += scanCell_(x, y);
+			}
+			map_.push(map_line);
+		}
+	}
 };
 
 module.exports.xyToLinear = xyToLinear;
