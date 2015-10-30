@@ -26,7 +26,7 @@ describe('Read maps', function() {
 			[ 0,98, 0,-1],
 			[99,97,97, 1]];
 		var reader = new MapReader(raw);
-		reader.getMap().should.be.deepEqual([
+		reader.getMap().should.be.equal([
 			" s b",
 			"e##d"]);
 		done();
