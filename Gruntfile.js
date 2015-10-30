@@ -2,7 +2,7 @@ module.exports = function(grunt) {
 	//Project configuration.
 	grunt.initConfig({
 		mocha_istanbul: {
-			src: [],
+			src: ["test/src"],
 			options: {
 				coverage: true,
 				root: '.',
