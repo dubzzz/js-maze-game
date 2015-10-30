@@ -1,4 +1,4 @@
-# The Maze Game
+# The Maze Game [![Build Status](https://travis-ci.org/dubzzz/node-maze-game.svg)](https://travis-ci.org/dubzzz/node-maze-game)[![Coverage Status](https://coveralls.io/repos/dubzzz/node-maze-game/badge.svg?branch=master&service=github)](https://coveralls.io/github/dubzzz/node-maze-game?branch=master)
 
 Puzzle-game where the solver as to find a path from departure to end in limited amount of mouvments.
 
