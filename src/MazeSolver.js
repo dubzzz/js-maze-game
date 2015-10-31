@@ -26,12 +26,22 @@ var xyToLinear = require('./MapReader.js').xyToLinear;
 
 var DOOR_TIME = 10;
 
+var LEFT = 0;
+var RIGHT = 1;
+var TOP = 2;
+var BOTTOM = 3;
+
 var MazeSolver = function(raw_data) {
 	var self = this;
+	var miniPath = undefined;
 	var miniMoves = -1;
 
 	this.minimumMoves = function() {
 		return miniMoves;
+	};
+
+	this.path = function() {
+		return miniPath;
 	};
 
 	var computeLevel = function(keys, doors_status) {
@@ -73,19 +83,59 @@ var MazeSolver = function(raw_data) {
 		return true;
 	};
 
-	var pushIf = function(cell_x, cell_y, cell_dist, size_x, size_y, popped_doors, doors_keys, map, helper, button_to_id, door_to_id) {
+	var savePath = function(helper, cell_x, cell_y, cell_level) {
+		miniPath = new Array();
+
+		var x = cell_x;
+		var y = cell_y;
+		var level = cell_level;
+		
+		while (helper[level][y][x]['level'] != -1) { // -1 is the value set for departure
+			
+			var move_level = helper[level][y][x]['level'];
+			var move_direction = helper[level][y][x]['direction'];
+
+			switch (move_direction) {
+				case LEFT:
+					miniPath.push("left");
+					x += 1;
+					break;
+				case RIGHT:
+					miniPath.push("right");
+					x -= 1;
+					break;
+				case TOP:
+					miniPath.push("top");
+					y += 1;
+					break;
+				case BOTTOM:
+					miniPath.push("bottom");
+					y -= 1;
+					break;
+				default:
+					return;
+			}
+			level = move_level;
+		}
+		miniPath.reverse();
+	};
+
+	var pushIf = function(direction, cell_x, cell_y, cell_dist, size_x, size_y, popped_level, popped_doors, doors_keys, map, helper, button_to_id, door_to_id) {
 		if (allowed(cell_x, cell_y, size_x, size_y, popped_doors, map, helper, door_to_id)) {
 			var cell_doors = descreasedDoors(doors_keys, popped_doors);
-			if (map[cell_y][cell_x] == 'e') {
-				miniMoves = cell_dist;
-				return false;
-			} else if (map[cell_y][cell_x] == 'b') {
+			if (map[cell_y][cell_x] == 'b') {
 				cell_doors[button_to_id[xyToLinear(cell_x,cell_y,size_x)]] = DOOR_TIME;
 			}
+
 			var cell_level = computeLevel(doors_keys, cell_doors);
-			if (helper[cell_level][cell_y][cell_x] == -2) { // others have already been treated
-				helper[cell_level][cell_y][cell_x] = cell_dist;
-				elts.push({dist: cell_dist, x: cell_x, y: cell_y, doors: cell_doors});
+			if (helper[cell_level][cell_y][cell_x] === undefined) { // others have already been treated
+				helper[cell_level][cell_y][cell_x] = {direction: direction, level: popped_level};
+				elts.push({dist: cell_dist, x: cell_x, y: cell_y, doors: cell_doors, level: cell_level});
+			}
+			if (map[cell_y][cell_x] == 'e') {
+				miniMoves = cell_dist;
+				savePath(helper, cell_x, cell_y, cell_level);
+				return false;
 			}
 		}
 		return true;
@@ -112,34 +162,36 @@ var MazeSolver = function(raw_data) {
 			for (var y = 0 ; y < size_y ; ++y) {
 				var intermediate_y = new Array(size_x);
 				for (var x = 0 ; x < size_x ; ++x) {
-					intermediate_y[x] = -2; //means we have not analyzed this cell
+					intermediate_y[x] = undefined; // the direction that brang us to that case (quickest path), undefined not initialized
 				}
 				intermediate_level[y] = intermediate_y;
 			}
 			helper[i] = intermediate_level;
 		}
+		helper[0][start_pos[1]][start_pos[0]] = {direction: -1, level: -1};
 
 		var elts = new Heap();
-		elts.push({dist: 0, x: start_pos[0], y: start_pos[1], doors: allClosedDoors(doors_keys)});
+		elts.push({dist: 0, x: start_pos[0], y: start_pos[1], doors: allClosedDoors(doors_keys), level: 0});
 
 		var popped = undefined;
 		while (popped = elts.pop()) {
 			var popped_x = popped['x'];
 			var popped_y = popped['y'];
 			var popped_doors = popped['doors'];
+			var popped_level = popped['level'];
 			
 			var cell_dist = popped['dist'] +1;
 			
-			if (! pushIf(popped_x +1, popped_y, cell_dist, size_x, size_y, popped_doors, doors_keys, map, helper, button_to_id, door_to_id)) {
+			if (! pushIf(RIGHT, popped_x +1, popped_y, cell_dist, size_x, size_y, popped_level, popped_doors, doors_keys, map, helper, button_to_id, door_to_id)) {
 				return cell_dist;
 			}
-			if (! pushIf(popped_x -1, popped_y, cell_dist, size_x, size_y, popped_doors, doors_keys, map, helper, button_to_id, door_to_id)) {
+			if (! pushIf(LEFT, popped_x -1, popped_y, cell_dist, size_x, size_y, popped_level, popped_doors, doors_keys, map, helper, button_to_id, door_to_id)) {
 				return cell_dist;
 			}
-			if (! pushIf(popped_x, popped_y +1, cell_dist, size_x, size_y, popped_doors, doors_keys, map, helper, button_to_id, door_to_id)) {
+			if (! pushIf(BOTTOM, popped_x, popped_y +1, cell_dist, size_x, size_y, popped_level, popped_doors, doors_keys, map, helper, button_to_id, door_to_id)) {
 				return cell_dist;
 			}
-			if (! pushIf(popped_x, popped_y -1, cell_dist, size_x, size_y, popped_doors, doors_keys, map, helper, button_to_id, door_to_id)) {
+			if (! pushIf(TOP, popped_x, popped_y -1, cell_dist, size_x, size_y, popped_level, popped_doors, doors_keys, map, helper, button_to_id, door_to_id)) {
 				return cell_dist;
 			}
 		}
