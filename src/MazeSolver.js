@@ -11,7 +11,7 @@
  * We have a maze of size_x x size_y cells at each times we have:
  *  (DOOR_TIME +1) ^ NUM_DOORS
  * possibilities for the configuration of doors.
- * helper_[door combination][y][x]
+ * helper[door combination][y][x]
  *
  * This figure might be reduce as (latter):
  * A user can only press one button at a time so she/he can only open a set of
@@ -73,6 +73,24 @@ var MazeSolver = function(raw_data) {
 		return true;
 	};
 
+	var pushIf = function(cell_x, cell_y, cell_dist, size_x, size_y, popped_doors, doors_keys, map, helper, button_to_id, door_to_id) {
+		if (allowed(cell_x, cell_y, size_x, size_y, popped_doors, map, helper, door_to_id)) {
+			var cell_doors = descreasedDoors(doors_keys, popped_doors);
+			if (map[cell_y][cell_x] == 'e') {
+				miniMoves = cell_dist;
+				return false;
+			} else if (map[cell_y][cell_x] == 'b') {
+				cell_doors[button_to_id[xyToLinear(cell_x,cell_y,size_x)]] = DOOR_TIME;
+			}
+			var cell_level = computeLevel(doors_keys, cell_doors);
+			if (helper[cell_level][cell_y][cell_x] == -2) { // others have already been treated
+				helper[cell_level][cell_y][cell_x] = cell_dist;
+				elts.push({dist: cell_dist, x: cell_x, y: cell_y, doors: cell_doors});
+			}
+		}
+		return true;
+	};
+
 	{
 		var reader = new MapReader(raw_data);
 		var doors_from_id = reader.getMappingIdDoors();
@@ -88,7 +106,7 @@ var MazeSolver = function(raw_data) {
 		var start_pos = linearToXY(reader.getStart(), size_x);
 		var map = reader.getMap();
 
-		var helper_ = new Array(num_combinations);
+		var helper = new Array(num_combinations);
 		for (var i = 0 ; i < num_combinations ; ++i) {
 			var intermediate_level = new Array(size_y);
 			for (var y = 0 ; y < size_y ; ++y) {
@@ -98,7 +116,7 @@ var MazeSolver = function(raw_data) {
 				}
 				intermediate_level[y] = intermediate_y;
 			}
-			helper_[i] = intermediate_level;
+			helper[i] = intermediate_level;
 		}
 
 		var elts = new Heap();
@@ -112,81 +130,17 @@ var MazeSolver = function(raw_data) {
 			
 			var cell_dist = popped['dist'] +1;
 			
-			{ // To the right
-				var cell_x = popped_x +1;
-				var cell_y = popped_y;
-				var cell_doors = descreasedDoors(doors_keys, popped_doors);
-
-				if (allowed(cell_x, cell_y, size_x, size_y, popped_doors, map, helper_, door_to_id)) {
-					if (map[cell_y][cell_x] == 'e') {
-						miniMoves = cell_dist;
-						return;
-					} else if (map[cell_y][cell_x] == 'b') {
-						cell_doors[button_to_id[xyToLinear(cell_x,cell_y,size_x)]] = DOOR_TIME;
-					}
-					var cell_level = computeLevel(doors_keys, cell_doors);
-					if (helper_[cell_level][cell_y][cell_x] == -2) { // others have already been treated
-						helper_[cell_level][cell_y][cell_x] = cell_dist;
-						elts.push({dist: cell_dist, x: cell_x, y: cell_y, doors: cell_doors});
-					}
-				}
+			if (! pushIf(popped_x +1, popped_y, cell_dist, size_x, size_y, popped_doors, doors_keys, map, helper, button_to_id, door_to_id)) {
+				return cell_dist;
 			}
-			{ // To the left
-				var cell_x = popped_x -1;
-				var cell_y = popped_y;
-				var cell_doors = descreasedDoors(doors_keys, popped_doors);
-
-				if (allowed(cell_x, cell_y, size_x, size_y, popped_doors, map, helper_, door_to_id)) {
-					if (map[cell_y][cell_x] == 'e') {
-						miniMoves = cell_dist;
-						return;
-					} else if (map[cell_y][cell_x] == 'b') {
-						cell_doors[button_to_id[xyToLinear(cell_x,cell_y,size_x)]] = DOOR_TIME;
-					}
-					var cell_level = computeLevel(doors_keys, cell_doors);
-					if (helper_[cell_level][cell_y][cell_x] == -2) { // others have already been treated
-						helper_[cell_level][cell_y][cell_x] = cell_dist;
-						elts.push({dist: cell_dist, x: cell_x, y: cell_y, doors: cell_doors});
-					}
-				}
+			if (! pushIf(popped_x -1, popped_y, cell_dist, size_x, size_y, popped_doors, doors_keys, map, helper, button_to_id, door_to_id)) {
+				return cell_dist;
 			}
-			{ // To the bottom
-				var cell_x = popped_x;
-				var cell_y = popped_y +1;
-				var cell_doors = descreasedDoors(doors_keys, popped_doors);
-
-				if (allowed(cell_x, cell_y, size_x, size_y, popped_doors, map, helper_, door_to_id)) {
-					if (map[cell_y][cell_x] == 'e') {
-						miniMoves = cell_dist;
-						return;
-					} else if (map[cell_y][cell_x] == 'b') {
-						cell_doors[button_to_id[xyToLinear(cell_x,cell_y,size_x)]] = DOOR_TIME;
-					}
-					var cell_level = computeLevel(doors_keys, cell_doors);
-					if (helper_[cell_level][cell_y][cell_x] == -2) { // others have already been treated
-						helper_[cell_level][cell_y][cell_x] = cell_dist;
-						elts.push({dist: cell_dist, x: cell_x, y: cell_y, doors: cell_doors});
-					}
-				}
+			if (! pushIf(popped_x, popped_y +1, cell_dist, size_x, size_y, popped_doors, doors_keys, map, helper, button_to_id, door_to_id)) {
+				return cell_dist;
 			}
-			{ // To the top
-				var cell_x = popped_x;
-				var cell_y = popped_y -1;
-				var cell_doors = descreasedDoors(doors_keys, popped_doors);
-
-				if (allowed(cell_x, cell_y, size_x, size_y, popped_doors, map, helper_, door_to_id)) {
-					if (map[cell_y][cell_x] == 'e') {
-						miniMoves = cell_dist;
-						return;
-					} else if (map[cell_y][cell_x] == 'b') {
-						cell_doors[button_to_id[xyToLinear(cell_x,cell_y,size_x)]] = DOOR_TIME;
-					}
-					var cell_level = computeLevel(doors_keys, cell_doors);
-					if (helper_[cell_level][cell_y][cell_x] == -2) { // others have already been treated
-						helper_[cell_level][cell_y][cell_x] = cell_dist;
-						elts.push({dist: cell_dist, x: cell_x, y: cell_y, doors: cell_doors});
-					}
-				}
+			if (! pushIf(popped_x, popped_y -1, cell_dist, size_x, size_y, popped_doors, doors_keys, map, helper, button_to_id, door_to_id)) {
+				return cell_dist;
 			}
 		}
 	}
