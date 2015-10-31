@@ -19,10 +19,10 @@
  * If door #1 still have N rounds opened and door #2 still have M, N != M
  */
 
-var Heap = require('./Heap.js').Heap;
-var MapReader = require('./MapReader.js').MapReader;
-var linearToXY = require('./MapReader.js').linearToXY;
-var xyToLinear = require('./MapReader.js').xyToLinear;
+var Heap = typeof require === 'undefined' ? MazeGame.Heap : require('./Heap.js').Heap;
+var MapReader = typeof require === 'undefined' ? MazeGame.MapReader : require('./MapReader.js').MapReader;
+var linearToXY = typeof require === 'undefined' ? MazeGame.linearToXY : require('./MapReader.js').linearToXY;
+var xyToLinear = typeof require === 'undefined' ? MazeGame.xyToLinear : require('./MapReader.js').xyToLinear;
 
 var DOOR_TIME = 10;
 
