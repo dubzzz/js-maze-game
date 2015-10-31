@@ -31,7 +31,7 @@ describe('Read maps', function() {
 			"e##d"]);
 		done();
 	});
-	it('Retrive doors mapping', function(done) {
+	it('Retrive doors mapping (reverse)', function(done) {
 		var raw = [
 			[ 0,98,-4,-1],
 			[99,97,97, 1],
@@ -49,6 +49,24 @@ describe('Read maps', function() {
 		doors[1].should.containDeep([7]);
 		doors[2].should.containDeep([8]);
 		doors[4].should.containDeep([10,11]); // order depends on the implementation
+		
+		done();
+	});
+	it('Retrive doors mapping', function(done) {
+		var raw = [
+			[ 0,98,-4,-1],
+			[99,97,97, 1],
+			[ 2,-2, 4, 4]];
+		var reader = new MapReader(raw);
+		var doors = reader.getMappingDoorId();
+		
+		Object.keys(doors).length.should.be.equal(4);
+		doors.should.have.keys(7,8,10,11);
+		
+		doors[7].should.be.equal(1);
+		doors[8].should.be.equal(2);
+		doors[10].should.be.equal(4);
+		doors[11].should.be.equal(4);
 		
 		done();
 	});

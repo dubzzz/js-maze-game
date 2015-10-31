@@ -30,6 +30,7 @@ var MapReader = function(raw_data) {
 	var start_ = -1;
 	var end_ = -1;
 	var mapping_button_to_id_ = {}; // xyToLinear -> n
+	var mapping_door_to_id_ = {}; // xyToLinear -> n
 	var mapping_id_to_doors_ = {}; // n -> list of xyToLinear (doors)
 	var map_ = new Array();
 	
@@ -51,6 +52,10 @@ var MapReader = function(raw_data) {
 	
 	this.getMappingButtonId = function() {
 		return mapping_button_to_id_;
+	};
+	
+	this.getMappingDoorId = function() {
+		return mapping_door_to_id_;
 	};
 	
 	this.getMappingIdDoors = function() {
@@ -80,6 +85,7 @@ var MapReader = function(raw_data) {
 						mapping_id_to_doors_[cell] = new Array();
 					}
 					mapping_id_to_doors_[cell].push(xyToLinear(x, y, size_x_));
+					mapping_door_to_id_[xyToLinear(x, y, size_x_)] = cell;
 					return 'd';
 				}
 				else {
