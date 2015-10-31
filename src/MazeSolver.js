@@ -200,5 +200,7 @@ var MazeSolver = function(raw_data) {
 
 module.exports.DOOR_TIME = DOOR_TIME;
 module.exports.MazeSolver = MazeSolver;
-}(typeof exports === 'undefined' ? this['MazeGame']={} : exports));
+}(typeof exports === 'undefined'
+		? (this['MazeGame'] === undefined ? this['MazeGame']={} : this['MazeGame'])
+		: exports));
 

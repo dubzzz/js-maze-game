@@ -110,5 +110,7 @@ var MapReader = function(raw_data) {
 exports.xyToLinear = xyToLinear;
 exports.linearToXY = linearToXY;
 exports.MapReader = MapReader;
-}(typeof exports === 'undefined' ? this['MazeGame']={} : exports));
+}(typeof exports === 'undefined'
+		? (this['MazeGame'] === undefined ? this['MazeGame']={} : this['MazeGame'])
+		: exports));
 

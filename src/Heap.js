@@ -84,6 +84,7 @@ var Heap = function() {
  */
 
 exports.Heap = Heap;
-
-}(typeof exports === 'undefined' ? this['MazeGame']={} : exports));
+}(typeof exports === 'undefined'
+		? (this['MazeGame'] === undefined ? this['MazeGame']={} : this['MazeGame'])
+		: exports));
 
