@@ -1,4 +1,4 @@
-(function() {
+(function(exports) {
 
 /**
  * MazeSolver solves the Maze described by a bi-dimensional array of int
@@ -200,4 +200,5 @@ var MazeSolver = function(raw_data) {
 
 module.exports.DOOR_TIME = DOOR_TIME;
 module.exports.MazeSolver = MazeSolver;
-}());
+}(typeof exports === 'undefined' ? this['MazeGame']={} : exports));
+

@@ -1,4 +1,4 @@
-(function() {
+(function(exports) {
 
 /**
  * Taken from https://github.com/dubzzz/js-pacman
@@ -83,7 +83,7 @@ var Heap = function() {
  * Module definition
  */
 
-module.exports.Heap = Heap;
+exports.Heap = Heap;
 
-}());
+}(typeof exports === 'undefined' ? this['MazeGame']={} : exports));
 

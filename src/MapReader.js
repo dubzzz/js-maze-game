@@ -1,4 +1,4 @@
-(function() {
+(function(exports) {
 
 /**
  * MapReader is responsible to read a bi-dimension array of int describing the map
@@ -107,7 +107,8 @@ var MapReader = function(raw_data) {
 	}
 };
 
-module.exports.xyToLinear = xyToLinear;
-module.exports.linearToXY = linearToXY;
-module.exports.MapReader = MapReader;
-}());
+exports.xyToLinear = xyToLinear;
+exports.linearToXY = linearToXY;
+exports.MapReader = MapReader;
+}(typeof exports === 'undefined' ? this['MazeGame']={} : exports));
+
