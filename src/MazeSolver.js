@@ -43,16 +43,6 @@ var MazeSolver = function(raw_data) {
 		return level;
 	};
 
-	var computeDoors = function(keys, level) {
-		var doors = {};
-		var level_copy = level;
-		for (var i = keys.length -1 ; i >= 0 ; --i) {
-			doors[keys[i]] = level_copy % (DOOR_TIME +1);
-			level_copy = Math.floor(level_copy /  (DOOR_TIME +1));
-		}
-		return doors;
-	};
-	
 	var allClosedDoors = function(keys) {
 		var doors = {};
 		for (var i = 0 ; i < keys.length ; ++i) {
@@ -61,13 +51,6 @@ var MazeSolver = function(raw_data) {
 		return doors;
 	};
 	
-	var clonedDoors = function(keys, doors_status) {
-		var doors = {};
-		for (var i = 0 ; i < keys.length ; ++i) {
-			doors[keys[i]] = doors_status[keys[i]];
-		}
-		return doors;
-	};
 	var descreasedDoors = function(keys, doors_status) {
 		var doors = {};
 		for (var i = 0 ; i < keys.length ; ++i) {
