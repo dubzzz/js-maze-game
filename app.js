@@ -8,6 +8,8 @@ app
 .get('/', function(req, res) {
 	res.sendfile(__dirname + '/templates/index.html');
 })
+.use('/static/img', express.static(__dirname + '/static/img'))
+.use('/static/js', express.static(__dirname + '/static/js'))
 .use('/static/node', express.static(__dirname + '/src'));
 
 var args = process.argv.slice(2);

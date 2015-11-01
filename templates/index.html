@@ -8,11 +8,9 @@
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    
     <script src="/static/node/MapReader.js"></script>
     <script src="/static/node/GameRunner.js"></script>
-    <script src="/static/node/WebDisplayer.js"></script>
+    <script src="/static/js/WebDisplayer.js"></script>
 
     <script>
       var GameRunner = MazeGame.GameRunner;
@@ -24,7 +22,7 @@
             [-1,97,-2,97,-3,97,97],
             [ 0,97, 1,97, 2,97,97],
             [98, 0, 0, 0, 0, 3,99]];
-        var displayer = new WebDisplayer($('#game #screen'));
+        var displayer = new WebDisplayer(document.getElementById('screen'));
         var game = new GameRunner(displayer, raw);
       }
     </script>
