@@ -25,7 +25,7 @@ describe('Solve mazes', function() {
 	it('End point', function(done) {
 		var raw = [[98,99]];
 		var runner = new GameRunner(displayer, raw);
-		runner.getStart().should.be.equal(0);
+		runner.getEnd().should.be.equal(1);
 		done();
 	});
 	
