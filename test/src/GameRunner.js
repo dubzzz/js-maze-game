@@ -193,6 +193,24 @@ describe('Move on mazes', function() {
 		done();
 	});
 	
+	/** Manage reversed doors **/
+
+	it('Move on a reversed door', function(done) {
+		var raw = [[98, 0,11,99]];
+		var runner = new GameRunner(displayer, raw);
+		runner.move('right').should.be.true;
+		runner.move('right').should.be.true;
+		runner.move('right').should.be.true;
+		done();
+	});
+	it('Activated reversed door is a wall', function(done) {
+		var raw = [[98,-1,11,99]];
+		var runner = new GameRunner(displayer, raw);
+		runner.move('right').should.be.true;
+		runner.move('right').should.be.false;
+		done();
+	});
+	
 	/** Display **/
 
 	it('Full refresh at start', function(done) {
@@ -221,21 +239,21 @@ describe('Move on mazes', function() {
 		done();
 	});
 	it('Update doors when pushing button', function(done) {
-		var raw = [[98, 0,-1, 1, 1, 1,99]];
+		var raw = [[98, 0,-1, 1, 1,11,99]];
 		var runner = new GameRunner(displayer, raw);
-		displayer.map_.should.be.eql(["C bddde"]);
+		displayer.map_.should.be.eql(["C bddre"]);
 		runner.move('right');
 		runner.move('right');
-		displayer.map_.should.be.eql(["s Crrre"]);
+		displayer.map_.should.be.eql(["s Crrde"]);
 		done();
 	});
 	it('Doors closed after restart', function(done) {
-		var raw = [[98, 0,-1, 1, 1, 1,99]];
+		var raw = [[98, 0,-1, 1, 1,11,99]];
 		var runner = new GameRunner(displayer, raw);
 		runner.move('right');
 		runner.move('right');
 		runner.restart();
-		displayer.map_.should.be.eql(["C bddde"]);
+		displayer.map_.should.be.eql(["C bddre"]);
 		done();
 	});
 });
