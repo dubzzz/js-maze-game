@@ -1,8 +1,13 @@
 'use strict';
 
+var MAX_DOORS = require('../../src/MapReader.js').MAX_DOORS;
 var MapReader = require('../../src/MapReader.js').MapReader;
 
 describe('Read maps', function() {
+	it('Check MAX_DOORS', function(done) {
+		MAX_DOORS.should.be.equal(10);
+		done();
+	});
 	it('Measure of X and Y', function(done) {
 		var raw = [
 			[98, 0, 0],
@@ -35,7 +40,8 @@ describe('Read maps', function() {
 		var raw = [
 			[ 0,98,-4,-1],
 			[99,97,97, 1],
-			[ 2,-2, 4, 4]];
+			[ 2,-2, 4, 4],
+			[14,12, 0, 0]];
 		var reader = new MapReader(raw);
 		var doors = reader.getMappingIdDoors();
 		
@@ -56,7 +62,8 @@ describe('Read maps', function() {
 		var raw = [
 			[ 0,98,-4,-1],
 			[99,97,97, 1],
-			[ 2,-2, 4, 4]];
+			[ 2,-2, 4, 4],
+			[14,12, 0, 0]];
 		var reader = new MapReader(raw);
 		var doors = reader.getMappingDoorId();
 		
@@ -70,11 +77,50 @@ describe('Read maps', function() {
 		
 		done();
 	});
+	it('Retrive reversed doors mapping (reverse)', function(done) {
+		var raw = [
+			[ 0,98,-4,-1],
+			[99,97,97, 1],
+			[ 2,-2, 4, 4],
+			[14,12,12, 0]];
+		var reader = new MapReader(raw);
+		var reversed = reader.getMappingIdReversed();
+		
+		Object.keys(reversed).length.should.be.equal(3);
+		reversed.should.have.keys(2,4);
+		
+		reversed[2].should.have.length(2);
+		reversed[4].should.have.length(1);
+		
+		reversed[2].should.containDeep([13,14]);
+		reversed[4].should.containDeep([12]); // order depends on the implementation
+		
+		done();
+	});
+	it('Retrive reversed doors mapping', function(done) {
+		var raw = [
+			[ 0,98,-4,-1],
+			[99,97,97, 1],
+			[ 2,-2, 4, 4],
+			[14,12, 0, 0]];
+		var reader = new MapReader(raw);
+		var reversed = reader.getMappingReversedId();
+		
+		Object.keys(reversed).length.should.be.equal(3);
+		reversed.should.have.keys(12,13,14);
+		
+		reversed[12].should.be.equal(4);
+		reversed[13].should.be.equal(2);
+		reversed[14].should.be.equal(2);
+		
+		done();
+	});
 	it('Retrive buttons mapping', function(done) {
 		var raw = [
 			[ 0,98,-4,-1],
 			[99,97,97, 1],
-			[ 2,-2, 4, 4]];
+			[ 2,-2, 4, 4],
+			[14,12, 0, 0]];
 		var reader = new MapReader(raw);
 		var buttons = reader.getMappingButtonId();
 		
