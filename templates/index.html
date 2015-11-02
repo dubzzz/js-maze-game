@@ -20,9 +20,11 @@
 
       var initGame = function() {
         var raw = [
-            [-1,97,-2,97,-3,97,97],
-            [ 0,97, 1,97, 2,97,97],
-            [98, 0, 0, 0, 0, 3,99]];
+            [99, 0, 2, 0, 0],
+            [11,97,12,97, 0],
+            [ 0,97,-2,97,-2],
+            [-1,97, 1,97, 0],
+            [98, 0, 0, 2, 1]];
         var displayer = new WebDisplayer(document.getElementById('screen'));
         game = new GameRunner(displayer, raw);
       }
