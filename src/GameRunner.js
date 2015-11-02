@@ -30,7 +30,7 @@ var GameRunner = function(displayer, raw_data) {
 	};
 
 	var refreshDoors = function(group_id) {
-		var value = doors_status_[group_id] > 0 ? ' ' : 'd';
+		var value = doors_status_[group_id] > 0 ? 'r' : 'd';
 		var doors = mapping_id_to_doors_[group_id];
 		for (var i = 0 ; i < doors.length ; ++i) {
 			var xy = linearToXY(doors[i], reader_.getSizeX());
@@ -89,7 +89,7 @@ var GameRunner = function(displayer, raw_data) {
 				break;
 			case 'd':
 				var group_id = mapping_door_to_id_[pos_y_][pos_x_];
-				displayer.displayCell(pos_x_, pos_y_, doors_status_[group_id] == 0 ? 'd' : ' ', group_id);
+				displayer.displayCell(pos_x_, pos_y_, doors_status_[group_id] == 0 ? 'd' : 'r', group_id);
 				break;
 			default:
 				displayer.displayCell(pos_x_, pos_y_, map_[pos_y_][pos_x_]);

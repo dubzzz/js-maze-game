@@ -226,7 +226,7 @@ describe('Move on mazes', function() {
 		displayer.map_.should.be.eql(["C bddde"]);
 		runner.move('right');
 		runner.move('right');
-		displayer.map_.should.be.eql(["s C   e"]);
+		displayer.map_.should.be.eql(["s Crrre"]);
 		done();
 	});
 	it('Doors closed after restart', function(done) {

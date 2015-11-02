@@ -31,6 +31,11 @@ var imgs = new Array();
 	img.src = "/static/img/door.png";
 	imgs.push(img);
 }
+{
+	var img = new Image();
+	img.src = "/static/img/reversed.png";
+	imgs.push(img);
+}
 
 var WebDisplayer = function(screen_canvas) {
 	var self = this;
@@ -76,6 +81,11 @@ var WebDisplayer = function(screen_canvas) {
 				ctx.fillStyle = COLORS[group_id -1];
 				ctx.fillRect(start_x, start_y, SIZE, SIZE);
 				img.src = "/static/img/door.png";
+				break;
+			case 'r':
+				ctx.fillStyle = COLORS[group_id -1];
+				ctx.fillRect(start_x, start_y, SIZE, SIZE);
+				img.src = "/static/img/reversed.png";
 				break;
 		};
 		ctx.drawImage(img, start_x, start_y);
