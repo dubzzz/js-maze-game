@@ -28,11 +28,11 @@ describe('Read maps', function() {
 	});
 	it('Read map', function(done) {
 		var raw = [
-			[ 0,98, 0,-1],
+			[11,98, 0,-1],
 			[99,97,97, 1]];
 		var reader = new MapReader(raw);
 		reader.getMap().should.be.eql([
-			" s b",
+			"rs b",
 			"e##d"]);
 		done();
 	});
@@ -41,7 +41,7 @@ describe('Read maps', function() {
 			[ 0,98,-4,-1],
 			[99,97,97, 1],
 			[ 2,-2, 4, 4],
-			[14,12, 0, 0]];
+			[14,12,12, 0]];
 		var reader = new MapReader(raw);
 		var doors = reader.getMappingIdDoors();
 		
@@ -63,7 +63,7 @@ describe('Read maps', function() {
 			[ 0,98,-4,-1],
 			[99,97,97, 1],
 			[ 2,-2, 4, 4],
-			[14,12, 0, 0]];
+			[14,12,12, 0]];
 		var reader = new MapReader(raw);
 		var doors = reader.getMappingDoorId();
 		
@@ -86,7 +86,7 @@ describe('Read maps', function() {
 		var reader = new MapReader(raw);
 		var reversed = reader.getMappingIdReversed();
 		
-		Object.keys(reversed).length.should.be.equal(3);
+		Object.keys(reversed).length.should.be.equal(2);
 		reversed.should.have.keys(2,4);
 		
 		reversed[2].should.have.length(2);
@@ -102,7 +102,7 @@ describe('Read maps', function() {
 			[ 0,98,-4,-1],
 			[99,97,97, 1],
 			[ 2,-2, 4, 4],
-			[14,12, 0, 0]];
+			[14,12,12, 0]];
 		var reader = new MapReader(raw);
 		var reversed = reader.getMappingReversedId();
 		
@@ -120,7 +120,7 @@ describe('Read maps', function() {
 			[ 0,98,-4,-1],
 			[99,97,97, 1],
 			[ 2,-2, 4, 4],
-			[14,12, 0, 0]];
+			[14,12,12, 0]];
 		var reader = new MapReader(raw);
 		var buttons = reader.getMappingButtonId();
 		

@@ -12,6 +12,8 @@ var CELL_WALL = 97;
 var CELL_START = 98;
 var CELL_END = 99;
 
+var MAX_DOORS = 10;
+
 function xyToLinear(x, y, size_x) {
 	return y * size_x + x;
 }
@@ -32,6 +34,8 @@ var MapReader = function(raw_data) {
 	var mapping_button_to_id_ = {}; // xyToLinear -> n
 	var mapping_door_to_id_ = {}; // xyToLinear -> n
 	var mapping_id_to_doors_ = {}; // n -> list of xyToLinear (doors)
+	var mapping_reversed_to_id_ = {}; // xyToLinear -> n
+	var mapping_id_to_reversed_ = {}; // n -> list of xyToLinear (reversed)
 	var map_ = new Array();
 	
 	this.getSizeX = function() {
@@ -61,6 +65,14 @@ var MapReader = function(raw_data) {
 	this.getMappingIdDoors = function() {
 		return mapping_id_to_doors_;
 	};
+	
+	this.getMappingReversedId = function() {
+		return mapping_reversed_to_id_;
+	};
+	
+	this.getMappingIdReversed = function() {
+		return mapping_id_to_reversed_;
+	};
 
 	this.getMap = function() {
 		return map_;
@@ -81,12 +93,22 @@ var MapReader = function(raw_data) {
 				return 'e';
 			default:
 				if (cell > 0) {
-					if (! mapping_id_to_doors_.hasOwnProperty(cell)) {
-						mapping_id_to_doors_[cell] = new Array();
+					if (cell <= MAX_DOORS) {
+						if (! mapping_id_to_doors_.hasOwnProperty(cell)) {
+							mapping_id_to_doors_[cell] = new Array();
+						}
+						mapping_id_to_doors_[cell].push(xyToLinear(x, y, size_x_));
+						mapping_door_to_id_[xyToLinear(x, y, size_x_)] = cell;
+						return 'd';
+					} else {
+						cell -= MAX_DOORS;
+						if (! mapping_id_to_reversed_.hasOwnProperty(cell)) {
+							mapping_id_to_reversed_[cell] = new Array();
+						}
+						mapping_id_to_reversed_[cell].push(xyToLinear(x, y, size_x_));
+						mapping_reversed_to_id_[xyToLinear(x, y, size_x_)] = cell;
+						return 'r';
 					}
-					mapping_id_to_doors_[cell].push(xyToLinear(x, y, size_x_));
-					mapping_door_to_id_[xyToLinear(x, y, size_x_)] = cell;
-					return 'd';
 				}
 				else {
 					mapping_button_to_id_[xyToLinear(x, y, size_x_)] = -cell;
@@ -107,6 +129,7 @@ var MapReader = function(raw_data) {
 	}
 };
 
+exports.MAX_DOORS = MAX_DOORS;
 exports.xyToLinear = xyToLinear;
 exports.linearToXY = linearToXY;
 exports.MapReader = MapReader;
