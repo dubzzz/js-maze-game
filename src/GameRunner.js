@@ -136,7 +136,7 @@ var GameRunner = function(displayer, raw_data) {
 		}
 		
 		displayer_.display(map_, mapping_button_to_id_, mapping_door_to_id_);
-		displayer.displayCharacter(pos_x_, pos_y_);
+		displayer_.displayCharacter(pos_x_, pos_y_);
 	};
 
 	var revampMapping = function(raw_mapping) {
