@@ -3,10 +3,21 @@
 var DOOR_TIME = require('../../src/MazeSolver.js').DOOR_TIME;
 var GameRunner = require('../../src/GameRunner.js').GameRunner;
 
-var displayer = {
-	displayCell: function(ctx, x, y, cell, group_id) {},
-	display: function(map, mapping_button_to_id, mapping_door_to_id) {}
+var Displayer = function() {
+	var self = this;
+	this.map_ = undefined;
+
+	this.displayCell = function(x, y, cell, group_id) {
+		self.map_[y] = self.map_[y].substr(0, x) + cell + self.map_[y].substr(x+1);
+	};
+	this.displayCharacter = function(x, y) {
+		self.map_[y] = self.map_[y].substr(0, x) + 'C' + self.map_[y].substr(x+1);
+	};
+	this.display = function(map, mapping_button_to_id, mapping_door_to_id) {
+		self.map_ = map.slice();
+	};
 };
+var displayer = new Displayer();
 
 describe('Move on mazes', function() {
 	it('Check DOOR_TIME constant', function(done) {
@@ -179,6 +190,52 @@ describe('Move on mazes', function() {
 		runner.move('down').should.be.true;
 		runner.move('right').should.be.true;
 		runner.move('right').should.be.true;
+		done();
+	});
+	
+	/** Display **/
+
+	it('Full refresh at start', function(done) {
+		var raw = [[98, 0, 0,99]];
+		var runner = new GameRunner(displayer, raw);
+		displayer.map_.should.be.eql(["C  e"]);
+		done();
+	});
+	it('Refresh previous cell on move', function(done) {
+		var raw = [[98, 0, 0,99]];
+		var runner = new GameRunner(displayer, raw);
+		displayer.map_.should.be.eql(["C  e"]);
+		runner.move('right');
+		displayer.map_.should.be.eql(["sC e"]);
+		runner.move('right');
+		displayer.map_.should.be.eql(["s Ce"]);
+		done();
+	});
+	it('Full refresh at restart', function(done) {
+		var raw = [[98, 0, 0,99]];
+		var runner = new GameRunner(displayer, raw);
+		runner.move('right');
+		runner.move('right');
+		runner.restart();
+		displayer.map_.should.be.eql(["C  e"]);
+		done();
+	});
+	it('Update doors when pushing button', function(done) {
+		var raw = [[98, 0,-1, 1, 1, 1,99]];
+		var runner = new GameRunner(displayer, raw);
+		displayer.map_.should.be.eql(["C bddde"]);
+		runner.move('right');
+		runner.move('right');
+		displayer.map_.should.be.eql(["s C   e"]);
+		done();
+	});
+	it('Doors closed after restart', function(done) {
+		var raw = [[98, 0,-1, 1, 1, 1,99]];
+		var runner = new GameRunner(displayer, raw);
+		runner.move('right');
+		runner.move('right');
+		runner.restart();
+		displayer.map_.should.be.eql(["C bddde"]);
 		done();
 	});
 });
