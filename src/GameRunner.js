@@ -101,7 +101,7 @@ var GameRunner = function(displayer, raw_data) {
 		var keys = Object.keys(doors_status_);
 		for (var i = 0 ; i < keys.length ; ++i) {
 			var key = keys[i];
-			if (doors_status_[key] > 0 {
+			if (doors_status_[key] > 0) {
 				doors_status_[key] -= 1;
 				if (doors_status_[key] == 0) {
 					refreshDoors(key);
