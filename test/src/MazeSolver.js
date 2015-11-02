@@ -144,7 +144,7 @@ describe('Solve mazes', function() {
 	it('Walk on unactivated reversed', function(done) {
 		var raw = [[ 0,98, 0,11, 0, 0,99, 0]];
 		var solver = new MazeSolver(raw);
-		solver.minimumMoves().should.be.equal(7);
+		solver.minimumMoves().should.be.equal(5);
 		done();
 	});
 	it('By-pass activated reversed', function(done) {
@@ -161,6 +161,12 @@ describe('Solve mazes', function() {
 		solver.minimumMoves().should.be.equal(-1);
 		done();
 	});
+	it('Button activate reversed immediately (going up)', function(done) {
+		var raw = [[99],[12],[-2],[98]];
+		var solver = new MazeSolver(raw);
+		solver.minimumMoves().should.be.equal(-1);
+		done();
+	});
 	it('Cannot move without activating the reversed', function(done) {
 		var raw = [[98,-1, 0,11, 0, 0, 0, 0,99]];
 		var solver = new MazeSolver(raw);
@@ -170,16 +176,16 @@ describe('Solve mazes', function() {
 	it('Move back and forth to pass the reversed', function(done) {
 		var raw = [[98,-1, 0, 0,11, 0, 0, 0, 0,99]];
 		var solver = new MazeSolver(raw);
-		solver.minimumMoves().should.be.equal(16);
+		solver.minimumMoves().should.be.equal(17);
 		done();
 	});
 	it('Same button for doors and reversed', function(done) {
 		var raw = [
 			[99, 0, 2, 0, 0],
-			[11,99,22,97, 0],
+			[11,97,12,97, 0],
 			[ 0,97,-2,97,-2],
 			[-1,97, 1,97, 0],
-			[98, 0, 0,22, 1]];
+			[98, 0, 0, 2, 1]];
 		var solver = new MazeSolver(raw);
 		solver.minimumMoves().should.be.equal(18);
 		done();
