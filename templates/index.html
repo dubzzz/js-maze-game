@@ -26,6 +26,27 @@
         var displayer = new WebDisplayer(document.getElementById('screen'));
         game = new GameRunner(displayer, raw);
       }
+      
+      window.addEventListener("keydown", function(e) {
+        switch (e.keyCode) {
+          case 37:
+            game.move("left");
+            e.preventDefault();
+            break;
+          case 38:
+            game.move("up");
+            e.preventDefault();
+            break;
+          case 39:
+            game.move("right");
+            e.preventDefault();
+            break;
+          case 40:
+            game.move("down");
+            e.preventDefault();
+            break;
+        }
+      }, false);
     </script>
   </head>
   <body onload="javascript:initGame()">
