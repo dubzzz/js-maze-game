@@ -6,8 +6,18 @@ var WebDisplayer = function(screen_canvas) {
 
 	var COLORS = ["#ff0000", "#00ff00", "#0000ff", "#ffff00", "#00ffff", "#ff00ff"];
 	var SIZE = 96;
+	
+	this.displayCharacter = function(x, y) {
+		var ctx = screen_canvas_.getContext("2d");
+		var start_x = SIZE * x;
+		var start_y = SIZE * y;
+		
+		ctx.fillStyle = "#000000";
+		ctx.fillRect(start_x, start_y, SIZE, SIZE);
+	};
 
-	this.displayCell = function(ctx, x, y, cell, group_id) {
+	this.displayCell = function(x, y, cell, group_id) {
+		var ctx = screen_canvas_.getContext("2d");
 		var start_x = SIZE * x;
 		var start_y = SIZE * y;
 		var img = new Image();
@@ -45,11 +55,9 @@ var WebDisplayer = function(screen_canvas) {
 		screen_canvas_.width = SIZE * map[0].length;
 		screen_canvas_.height = SIZE * map.length;
 
-		var ctx = screen_canvas_.getContext("2d");
-
 		for (var y = 0 ; y < map.length ; ++y) {
 			for (var x = 0 ; x < map[y].length ; ++x) {
-				this.displayCell(ctx, x, y, map[y][x],
+				this.displayCell(x, y, map[y][x],
 						(mapping_button_to_id[y] !== undefined && mapping_button_to_id[y][x] !== undefined)
 						? mapping_button_to_id[y][x]
 						: (
