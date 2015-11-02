@@ -8,7 +8,7 @@ var displayer = {
 	display: function(map, mapping_button_to_id, mapping_door_to_id) {}
 };
 
-describe('Solve mazes', function() {
+describe('Move on mazes', function() {
 	it('Check DOOR_TIME constant', function(done) {
 		DOOR_TIME.should.be.equal(10);
 		done();
@@ -91,8 +91,7 @@ describe('Solve mazes', function() {
 			[ 0, 0, 0, 0, 0, 0]];
 		
 		var runner = new GameRunner(displayer, raw);
-		runner.move('right').should.be.true;
-		runner.move('right').should.be.false;
+		runner.move('left').should.be.false;
 		done();
 	});
 
@@ -101,59 +100,59 @@ describe('Solve mazes', function() {
 	it('Open one door', function(done) {
 		var raw = [[98,-1, 1,99]];
 		var runner = new GameRunner(displayer, raw);
-		runner.move('left').should.be.true;
-		runner.move('left').should.be.true;
-		runner.move('left').should.be.true;
+		runner.move('right').should.be.true;
+		runner.move('right').should.be.true;
+		runner.move('right').should.be.true;
 		done();
 	});
 	it('Max door time', function(done) {
 		var raw = [[98,-1, 0, 0, 0, 0, 0, 0, 0, 0, 1,99]];
 		var runner = new GameRunner(displayer, raw);
-		runner.move('left').should.be.true;
-		runner.move('left').should.be.true;
-		runner.move('left').should.be.true;
-		runner.move('left').should.be.true;
-		runner.move('left').should.be.true;
-		runner.move('left').should.be.true;
-		runner.move('left').should.be.true;
-		runner.move('left').should.be.true;
-		runner.move('left').should.be.true;
-		runner.move('left').should.be.true;
-		runner.move('left').should.be.true;
+		runner.move('right').should.be.true;
+		runner.move('right').should.be.true;
+		runner.move('right').should.be.true;
+		runner.move('right').should.be.true;
+		runner.move('right').should.be.true;
+		runner.move('right').should.be.true;
+		runner.move('right').should.be.true;
+		runner.move('right').should.be.true;
+		runner.move('right').should.be.true;
+		runner.move('right').should.be.true;
+		runner.move('right').should.be.true;
 		done();
 	});
 	it('Max door time +1 (block cannot be closed)', function(done) {
 		var raw = [[98,-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,99]];
 		var runner = new GameRunner(displayer, raw);
-		runner.move('left').should.be.true;
-		runner.move('left').should.be.true;
-		runner.move('left').should.be.true;
-		runner.move('left').should.be.true;
-		runner.move('left').should.be.true;
-		runner.move('left').should.be.true;
-		runner.move('left').should.be.true;
-		runner.move('left').should.be.true;
-		runner.move('left').should.be.true;
-		runner.move('left').should.be.true;
-		runner.move('left').should.be.true;
-		runner.move('left').should.be.true;
+		runner.move('right').should.be.true;
+		runner.move('right').should.be.true;
+		runner.move('right').should.be.true;
+		runner.move('right').should.be.true;
+		runner.move('right').should.be.true;
+		runner.move('right').should.be.true;
+		runner.move('right').should.be.true;
+		runner.move('right').should.be.true;
+		runner.move('right').should.be.true;
+		runner.move('right').should.be.true;
+		runner.move('right').should.be.true;
+		runner.move('right').should.be.true;
 		done();
 	});
 	it('Too slow to reach the door', function(done) {
 		var raw = [[98,-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,99]];
 		var runner = new GameRunner(displayer, raw);
-		runner.move('left').should.be.true;
-		runner.move('left').should.be.true;
-		runner.move('left').should.be.true;
-		runner.move('left').should.be.true;
-		runner.move('left').should.be.true;
-		runner.move('left').should.be.true;
-		runner.move('left').should.be.true;
-		runner.move('left').should.be.true;
-		runner.move('left').should.be.true;
-		runner.move('left').should.be.true;
-		runner.move('left').should.be.true;
-		runner.move('left').should.be.false;
+		runner.move('right').should.be.true;
+		runner.move('right').should.be.true;
+		runner.move('right').should.be.true;
+		runner.move('right').should.be.true;
+		runner.move('right').should.be.true;
+		runner.move('right').should.be.true;
+		runner.move('right').should.be.true;
+		runner.move('right').should.be.true;
+		runner.move('right').should.be.true;
+		runner.move('right').should.be.true;
+		runner.move('right').should.be.true;
+		runner.move('right').should.be.false;
 		done();
 	});
 	it('Doors leading to buttons', function(done) {
