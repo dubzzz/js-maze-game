@@ -15,6 +15,8 @@ var GameRunner = function(displayer, raw_data) {
 	var mapping_button_to_id_ = undefined;
 	var mapping_door_to_id_ = undefined;
 	var mapping_id_to_doors_ = undefined;
+	var mapping_reversed_to_id_ = undefined;
+	var mapping_id_to_reversed_ = undefined;
 	var doors_status_ = {};
 	
 	var num_moves_ = 0;
@@ -32,11 +34,23 @@ var GameRunner = function(displayer, raw_data) {
 	var refreshDoors = function(group_id) {
 		var value = doors_status_[group_id] > 0 ? 'r' : 'd';
 		var doors = mapping_id_to_doors_[group_id];
-		for (var i = 0 ; i < doors.length ; ++i) {
-			var xy = linearToXY(doors[i], reader_.getSizeX());
-			var x = xy[0];
-			var y = xy[1];
-			displayer_.displayCell(x, y, value, group_id);
+		if (doors !== undefined) {
+			for (var i = 0 ; i < doors.length ; ++i) {
+				var xy = linearToXY(doors[i], reader_.getSizeX());
+				var x = xy[0];
+				var y = xy[1];
+				displayer_.displayCell(x, y, value, group_id);
+			}
+		}
+		value =  value == 'r' ? 'd' : 'r';
+		var reversed = mapping_id_to_reversed_[group_id];
+		if (reversed !== undefined) {
+			for (var i = 0 ; i < reversed.length ; ++i) {
+				var xy = linearToXY(reversed[i], reader_.getSizeX());
+				var x = xy[0];
+				var y = xy[1];
+				displayer_.displayCell(x, y, value, group_id);
+			}
 		}
 	}
 
@@ -75,7 +89,13 @@ var GameRunner = function(displayer, raw_data) {
 				break;
 			case 'd':
 				var group_id = mapping_door_to_id_[next_y][next_x];
-				if (doors_status_[group_id] == 0) {
+				if (doors_status_[group_id] <= 0) {
+					return false;
+				}
+				break;
+			case 'r':
+				var group_id = mapping_reversed_to_id_[next_y][next_x];
+				if (doors_status_[group_id] > 0) {
 					return false;
 				}
 				break;
@@ -89,7 +109,11 @@ var GameRunner = function(displayer, raw_data) {
 				break;
 			case 'd':
 				var group_id = mapping_door_to_id_[pos_y_][pos_x_];
-				displayer.displayCell(pos_x_, pos_y_, doors_status_[group_id] == 0 ? 'd' : 'r', group_id);
+				displayer.displayCell(pos_x_, pos_y_, doors_status_[group_id] <= 0 ? 'd' : 'r', group_id);
+				break;
+			case 'r':
+				var group_id = mapping_reversed_to_id_[pos_y_][pos_x_];
+				displayer.displayCell(pos_x_, pos_y_, doors_status_[group_id] <= 0 ? 'r' : 'd', group_id);
 				break;
 			default:
 				displayer.displayCell(pos_x_, pos_y_, map_[pos_y_][pos_x_]);
@@ -135,7 +159,7 @@ var GameRunner = function(displayer, raw_data) {
 			doors_status_[keys[i]] = 0;
 		}
 		
-		displayer_.display(map_, mapping_button_to_id_, mapping_door_to_id_);
+		displayer_.display(map_, mapping_button_to_id_, mapping_door_to_id_, mapping_reversed_to_id_);
 		displayer_.displayCharacter(pos_x_, pos_y_);
 	};
 
@@ -160,8 +184,14 @@ var GameRunner = function(displayer, raw_data) {
 		mapping_button_to_id_ = revampMapping(reader_.getMappingButtonId());
 		mapping_door_to_id_ = revampMapping(reader_.getMappingDoorId());
 		mapping_id_to_doors_ = reader_.getMappingIdDoors();
+		mapping_reversed_to_id_ = revampMapping(reader_.getMappingReversedId());
+		mapping_id_to_reversed_ = reader_.getMappingIdReversed();
 
 		var keys = Object.keys(mapping_id_to_doors_);
+		for (var i = 0 ; i < keys.length ; ++i) {
+			doors_status_[keys[i]] = 0;
+		}
+		keys = Object.keys(mapping_id_to_reversed_);
 		for (var i = 0 ; i < keys.length ; ++i) {
 			doors_status_[keys[i]] = 0;
 		}
@@ -174,3 +204,4 @@ exports.GameRunner = GameRunner;
 }(typeof exports === 'undefined'
 		? (this['MazeGame'] === undefined ? this['MazeGame']={} : this['MazeGame'])
 		: exports));
+
