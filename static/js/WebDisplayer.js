@@ -1,5 +1,37 @@
 (function(exports) {
 
+var imgs = new Array();
+{
+	var img = new Image();
+	img.src = "/static/img/start.png";
+	imgs.push(img);
+}
+{
+	var img = new Image();
+	img.src = "/static/img/end.png";
+	imgs.push(img);
+}
+{
+	var img = new Image();
+	img.src = "/static/img/path.png";
+	imgs.push(img);
+}
+{
+	var img = new Image();
+	img.src = "/static/img/wall.png";
+	imgs.push(img);
+}
+{
+	var img = new Image();
+	img.src = "/static/img/button.png";
+	imgs.push(img);
+}
+{
+	var img = new Image();
+	img.src = "/static/img/door.png";
+	imgs.push(img);
+}
+
 var WebDisplayer = function(screen_canvas) {
 	var self = this;
 	var screen_canvas_ = screen_canvas;
@@ -46,9 +78,7 @@ var WebDisplayer = function(screen_canvas) {
 				img.src = "/static/img/door.png";
 				break;
 		};
-		img.onload = function() {
-			ctx.drawImage(img, start_x, start_y);
-		};
+		ctx.drawImage(img, start_x, start_y);
 	}
 
 	this.display = function(map, mapping_button_to_id, mapping_door_to_id) {
