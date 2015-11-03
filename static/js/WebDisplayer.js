@@ -36,6 +36,11 @@ var imgs = new Array();
 	img.src = "/static/img/reversed.png";
 	imgs.push(img);
 }
+{
+	var img = new Image();
+	img.src = "/static/img/hero.png";
+	imgs.push(img);
+}
 
 var WebDisplayer = function(screen_canvas) {
 	var self = this;
@@ -49,8 +54,9 @@ var WebDisplayer = function(screen_canvas) {
 		var start_x = SIZE * x;
 		var start_y = SIZE * y;
 		
-		ctx.fillStyle = "#000000";
-		ctx.fillRect(start_x, start_y, SIZE, SIZE);
+		var img = new Image();
+		img.src = "/static/img/hero.png";
+		ctx.drawImage(img, start_x, start_y);
 	};
 
 	this.displayCell = function(x, y, cell, group_id) {
