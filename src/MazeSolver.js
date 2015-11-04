@@ -9,7 +9,7 @@
  *
  * How did we decide its size?
  * We have a maze of size_x x size_y cells at each times we have:
- *  (DOOR_TIME +1) ^ NUM_DOORS
+ *  (door_time_ +1) ^ NUM_DOORS
  * possibilities for the configuration of doors.
  * helper[door combination][y][x]
  *
@@ -31,10 +31,11 @@ var RIGHT = 1;
 var TOP = 2;
 var BOTTOM = 3;
 
-var MazeSolver = function(raw_data) {
+var MazeSolver = function(raw_data, door_times) {
 	var self = this;
 	var miniPath = undefined;
 	var miniMoves = -1;
+	var door_times_ = {};
 
 	this.minimumMoves = function() {
 		return miniMoves;
@@ -47,8 +48,9 @@ var MazeSolver = function(raw_data) {
 	var computeLevel = function(keys, doors_status) {
 		var level = 0;
 		for (var i = 0 ; i < keys.length ; ++i) {
-			level *= DOOR_TIME +1;
-			level += doors_status[keys[i]];
+			var key = keys[i];
+			level *= door_times_[key] +1;
+			level += doors_status[key];
 		}
 		return level;
 	};
@@ -126,7 +128,8 @@ var MazeSolver = function(raw_data) {
 		if (allowed(cell_x, cell_y, size_x, size_y, popped_doors, map, helper, door_to_id, reversed_to_id)) {
 			var cell_doors = descreasedDoors(doors_keys, popped_doors);
 			if (map[cell_y][cell_x] == 'b') {
-				cell_doors[button_to_id[xyToLinear(cell_x,cell_y,size_x)]] = DOOR_TIME;
+				var bid = button_to_id[xyToLinear(cell_x,cell_y,size_x)];
+				cell_doors[bid] = door_times_[bid];
 			}
 
 			var cell_level = computeLevel(doors_keys, cell_doors);
@@ -159,10 +162,16 @@ var MazeSolver = function(raw_data) {
 				doors_keys.push(key);
 			}
 		}
+
+		var num_combinations = 1;
 		var num_doors = doors_keys.length;
-		
-		var num_combinations = Math.pow(DOOR_TIME +1, num_doors);
-		
+		for (var i = 0 ; i < num_doors ; ++i) {
+			var key = doors_keys[i];
+			var dtime = door_times !== undefined && door_times.hasOwnProperty(key) ? door_times[key] : DOOR_TIME;
+			door_times_[key] = dtime;
+			num_combinations *= dtime +1;
+		}
+
 		var size_x = reader.getSizeX();
 		var size_y = reader.getSizeY();
 
