@@ -127,6 +127,7 @@ var GameRunner = function(displayer, raw_data) {
 			var key = keys[i];
 			if (doors_status_[key] > 0) {
 				doors_status_[key] -= 1;
+				displayer_.refreshDoorStatus(key, doors_status_[key]);
 				if (doors_status_[key] == 0) {
 					refreshDoors(key);
 				}
@@ -161,6 +162,12 @@ var GameRunner = function(displayer, raw_data) {
 		
 		displayer_.display(map_, mapping_button_to_id_, mapping_door_to_id_, mapping_reversed_to_id_);
 		displayer_.displayCharacter(pos_x_, pos_y_);
+
+		var doors_duration = {};
+		for (var i = 0 ; i < keys.length ; ++i) {
+			doors_duration[keys[i]] = DOOR_TIME;
+		}
+		displayer_.initDoorsStatus(doors_duration);
 	};
 
 	var revampMapping = function(raw_mapping) {

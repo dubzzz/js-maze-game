@@ -25,7 +25,7 @@
             [ 0,97,-2,97,-2],
             [-1,97, 1,97, 0],
             [98, 0, 0, 2, 1]];
-        var displayer = new WebDisplayer(document.getElementById('screen'));
+        var displayer = new WebDisplayer(document.getElementById('screen'), document.getElementById('more'));
         game = new GameRunner(displayer, raw);
       }
       
@@ -55,6 +55,7 @@
     <div class="container">
       <div id="game">
         <canvas id="screen" height="0" width="0"></canvas>
+        <div id="more"></div>
       </div>
     </div>
   </body>

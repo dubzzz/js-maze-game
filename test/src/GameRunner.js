@@ -6,7 +6,22 @@ var GameRunner = require('../../src/GameRunner.js').GameRunner;
 var Displayer = function() {
 	var self = this;
 	this.map_ = undefined;
+	this.doors_duration_ = undefined;
+	this.doors_ = undefined;
 
+	this.initDoorsStatus = function(doors_duration) {
+		self.doors_ = {};
+		self.doors_duration_ = {};
+		var keys = Object.keys(doors_duration);
+		for (var i = 0 ; i < keys.length ; ++i) {
+			var key = keys[i];
+			self.doors_[key] = 0;
+			self.doors_duration_[key] = doors_duration[key];
+		}
+	};
+	this.refreshDoorStatus = function(group_id, status) {
+		self.doors_[group_id] = status;
+	};
 	this.displayCell = function(x, y, cell, group_id) {
 		self.map_[y] = self.map_[y].substr(0, x) + cell + self.map_[y].substr(x+1);
 	};
@@ -254,6 +269,61 @@ describe('Move on mazes', function() {
 		runner.move('right');
 		runner.restart();
 		displayer.map_.should.be.eql(["C bddre"]);
+		done();
+	});
+
+	/** Doors status **/
+
+	it('Full refresh at start', function(done) {
+		var raw = [[98, 1, 5,99]];
+		var runner = new GameRunner(displayer, raw);
+		displayer.doors_.should.be.eql({1: 0, 5: 0});
+		displayer.doors_duration_.should.be.eql({1: DOOR_TIME, 5: DOOR_TIME});
+		done();
+	});
+	it('Button triggers a refresh of door\' status', function(done) {
+		var raw = [[98,-5, 5,99]];
+		var runner = new GameRunner(displayer, raw);
+		runner.move('right');
+		displayer.doors_.should.be.eql({5: DOOR_TIME});
+		done();
+	});
+	it('Door\' status decreases when moving away', function(done) {
+		var raw = [[98,-5, 0, 0, 0, 0, 0, 0, 5,99]];
+		var runner = new GameRunner(displayer, raw);
+		runner.move('right');
+		displayer.doors_.should.be.eql({5: DOOR_TIME});
+		runner.move('right');
+		displayer.doors_.should.be.eql({5: DOOR_TIME -1});
+		runner.move('right');
+		displayer.doors_.should.be.eql({5: DOOR_TIME -2});
+		done();
+	});
+	it('Door\' status decreases until 0', function(done) {
+		var raw = [[98,-5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5,99]];
+		var runner = new GameRunner(displayer, raw);
+		runner.move('right');
+		runner.move('right');
+		runner.move('right');
+		runner.move('right');
+		runner.move('right');
+		runner.move('right');
+		runner.move('right');
+		runner.move('right');
+		runner.move('right');
+		runner.move('right');
+		runner.move('right');
+		runner.move('right');
+		runner.move('right');
+		displayer.doors_.should.be.eql({5: 0});
+		done();
+	});
+	it('Door\' status resetted when game is restarted', function(done) {
+		var raw = [[98,-5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5,99]];
+		var runner = new GameRunner(displayer, raw);
+		runner.move('right');
+		runner.restart();
+		displayer.doors_.should.be.eql({5: 0});
 		done();
 	});
 });
