@@ -6,7 +6,7 @@ var xyToLinear = typeof require === 'undefined' ? MazeGame.xyToLinear : require(
 
 var DOOR_TIME = 10;
 
-var GameRunner = function(displayer, raw_data, total_lifes) {
+var GameRunner = function(displayer, raw_data, total_lifes, door_times) {
 	var self = this;
 	var reader_ = new MapReader(raw_data);
 	var displayer_ = displayer;
@@ -19,6 +19,7 @@ var GameRunner = function(displayer, raw_data, total_lifes) {
 	var mapping_id_to_reversed_ = undefined;
 	var doors_status_ = {};
 	var total_lifes_ = total_lifes;
+	var door_times_ = {};
 	
 	var num_moves_ = 0;
 	var pos_x_, pos_y_;
@@ -88,7 +89,7 @@ var GameRunner = function(displayer, raw_data, total_lifes) {
 			case 'b':
 				var group_id = mapping_button_to_id_[next_y][next_x];
 				if (doors_status_[group_id] !== undefined) {
-					doors_status_[group_id] = DOOR_TIME +1; // +1 because decreased just after
+					doors_status_[group_id] = door_times_[group_id] +1; // +1 because decreased just after
 					refreshDoors(group_id);
 				}
 				break;
@@ -168,13 +169,8 @@ var GameRunner = function(displayer, raw_data, total_lifes) {
 		
 		displayer_.display(map_, mapping_button_to_id_, mapping_door_to_id_, mapping_reversed_to_id_);
 		displayer_.displayCharacter(pos_x_, pos_y_);
-
-		var doors_duration = {};
-		for (var i = 0 ; i < keys.length ; ++i) {
-			doors_duration[keys[i]] = DOOR_TIME;
-		}
 		displayer_.refreshLife(total_lifes_, total_lifes_);
-		displayer_.initDoorsStatus(doors_duration);
+		displayer_.initDoorsStatus(door_times_);
 	};
 
 	var revampMapping = function(raw_mapping) {
@@ -210,6 +206,12 @@ var GameRunner = function(displayer, raw_data, total_lifes) {
 			doors_status_[keys[i]] = 0;
 		}
 
+		keys = Object.keys(doors_status_);
+		for (var i = 0 ; i < keys.length ; ++i) {
+			var key = keys[i];
+			door_times_[key] = door_times !== undefined && door_times.hasOwnProperty(key) ? door_times[key] : DOOR_TIME;
+		}
+		console.log(door_times_);
 		this.restart();
 	}
 };

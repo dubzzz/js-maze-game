@@ -385,23 +385,23 @@ describe('Move on mazes', function() {
 	it('Door time display check', function(done) {
 		var raw = [[98,-2,-1, 0, 0, 0, 0, 0, 2, 1,11,99]];
 		var door_times = {1: 2, 2: 5};
-		var runner = new GameRunner(displayer, raw, -1);
+		var runner = new GameRunner(displayer, raw, -1, door_times);
 		runner.move('right');// activate 2
 		runner.move('right');// activate 1
 		runner.move('right');
-		displayer.map_.should.be.eql(["sbbC    ddre"]);
+		displayer.map_.should.be.eql(["sbbC    rrde"]);
 		runner.move('right');
-		displayer.map_.should.be.eql(["sbb C   drde"]);
+		displayer.map_.should.be.eql(["sbb C   rdre"]);
 		runner.move('right');
-		displayer.map_.should.be.eql(["sbb  C  drde"]);
+		displayer.map_.should.be.eql(["sbb  C  rdre"]);
 		runner.move('right');
-		displayer.map_.should.be.eql(["sbb   C rrde"]);
+		displayer.map_.should.be.eql(["sbb   C ddre"]);
 		done();
 	});
 	it('Door time reached', function(done) {
 		var raw = [[98,-1, 0, 1,99]];
 		var door_times = {1: 1};
-		var runner = new GameRunner(displayer, raw, -1);
+		var runner = new GameRunner(displayer, raw, -1, door_times);
 		runner.move('right');
 		runner.move('right').should.be.true;
 		runner.move('right').should.be.false;
