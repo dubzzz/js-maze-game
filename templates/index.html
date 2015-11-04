@@ -25,8 +25,9 @@
             [ 0,97,-2,97,-2],
             [-1,97, 1,97, 0],
             [98, 0, 0, 2, 1]];
+        var door_times = {1: 10, 2: 4};
         var displayer = new WebDisplayer(document.getElementById('screen'), document.getElementById('more'));
-        game = new GameRunner(displayer, raw, 18);
+        game = new GameRunner(displayer, raw, 18, door_times);
       }
       
       window.addEventListener("keydown", function(e) {
