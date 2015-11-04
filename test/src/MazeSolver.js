@@ -190,5 +190,43 @@ describe('Solve mazes', function() {
 		solver.minimumMoves().should.be.equal(18);
 		done();
 	});
+
+	/** With custom door times **/
+
+	it('Do not use default door time (less than default)', function(done) {
+		var raw = [[98,-5, 0, 0, 5,99]];
+		var door_times = {5: 1};
+		var solver = new MazeSolver(raw, door_times);
+		solver.minimumMoves().should.be.equal(-1);
+		done();
+	});
+	it('Do not use default door time (more than default)', function(done) {
+		var raw = [[98,-5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5,99]];
+		var door_times = {5: 100};
+		var solver = new MazeSolver(raw, door_times);
+		solver.minimumMoves().should.be.equal(17);
+		done();
+	});
+	it('Multiple door times', function(done) {
+		var raw = [[98,-5,-6, 6, 5,99]];
+		var door_times = {5: 3, 6: 1};
+		var solver = new MazeSolver(raw, door_times);
+		solver.minimumMoves().should.be.equal(5);
+		done();
+	});
+	it('Multiple door times but too short', function(done) {
+		var raw = [[98,-5,-6, 6, 5,99]];
+		var door_times = {5: 1, 6: 1};
+		var solver = new MazeSolver(raw, door_times);
+		solver.minimumMoves().should.be.equal(-1);
+		done();
+	});
+	it('Door time not set is default', function(done) {
+		var raw = [[98,-5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5,99]];
+		var door_times = {};
+		var solver = new MazeSolver(raw, door_times);
+		solver.minimumMoves().should.be.equal(12);
+		done();
+	});
 });
 
