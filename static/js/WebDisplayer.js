@@ -68,7 +68,7 @@ var WebDisplayer = function(screen_canvas, info_canvas) {
 		ctx.font = '20pt Calibri';
       	ctx.textAlign = 'center';
       	ctx.fillStyle = color;
-      	ctx.fillText(status, INFO_SIZE/2, INFO_SIZE/2 +10);
+      	ctx.fillText(status == 0 ? ("[ " + duration + " ]") : status, INFO_SIZE/2, INFO_SIZE/2 +10);
 	};
 
 	this.initDoorsStatus = function(doors_duration) {
