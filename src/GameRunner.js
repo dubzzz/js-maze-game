@@ -6,7 +6,7 @@ var xyToLinear = typeof require === 'undefined' ? MazeGame.xyToLinear : require(
 
 var DOOR_TIME = 10;
 
-var GameRunner = function(displayer, raw_data) {
+var GameRunner = function(displayer, raw_data, total_lifes) {
 	var self = this;
 	var reader_ = new MapReader(raw_data);
 	var displayer_ = displayer;
@@ -18,6 +18,7 @@ var GameRunner = function(displayer, raw_data) {
 	var mapping_reversed_to_id_ = undefined;
 	var mapping_id_to_reversed_ = undefined;
 	var doors_status_ = {};
+	var total_lifes_ = total_lifes;
 	
 	var num_moves_ = 0;
 	var pos_x_, pos_y_;
@@ -55,6 +56,10 @@ var GameRunner = function(displayer, raw_data) {
 	}
 
 	this.move = function(direction) {
+		if (num_moves_ == total_lifes_) {
+			return false;
+		}
+
 		var next_x = pos_x_;
 		var next_y = pos_y_;
 
@@ -141,6 +146,7 @@ var GameRunner = function(displayer, raw_data) {
 		num_moves_ += 1;
 		pos_x_ = next_x;
 		pos_y_ = next_y;
+		displayer_.refreshLife(total_lifes_ - num_moves_, total_lifes_);
 		return true;
 	};
 
@@ -167,6 +173,7 @@ var GameRunner = function(displayer, raw_data) {
 		for (var i = 0 ; i < keys.length ; ++i) {
 			doors_duration[keys[i]] = DOOR_TIME;
 		}
+		displayer_.refreshLife(total_lifes_, total_lifes_);
 		displayer_.initDoorsStatus(doors_duration);
 	};
 

@@ -51,6 +51,7 @@ var WebDisplayer = function(screen_canvas, info_canvas) {
 	var COLORS = ["#ff0000", "#00ff00", "#0000ff", "#ffff00", "#00ffff", "#ff00ff"];
 	var SIZE = 96;
 	var INFO_SIZE = 96;
+	var LIFE_SIZE = 2 * INFO_SIZE;
 	
 	var drawDoorStatus = function(canvas, color, status) {
 		canvas.setAttribute('data-door-current', status);
@@ -71,8 +72,9 @@ var WebDisplayer = function(screen_canvas, info_canvas) {
 	};
 
 	this.initDoorsStatus = function(doors_duration) {
-		while (info_canvas_.childNodes.length > 0) {
-			info_canvas_.removeChildren(info_canvas_.childNodes[0]);
+		var statuses_canvas = info_canvas_.getElementsByClassName("gamerunner-statuses")[0];
+		while (statuses_canvas.childNodes.length > 0) {
+			statuses_canvas.removeChildren(statuses_canvas.childNodes[0]);
 		}
 		info_canvas_sub_ = {};
 		var keys = Object.keys(doors_duration);
@@ -84,13 +86,34 @@ var WebDisplayer = function(screen_canvas, info_canvas) {
 			canvas.width = INFO_SIZE;
 			canvas.height = INFO_SIZE;
 			drawDoorStatus(canvas, COLORS[key -1], 0);
-			info_canvas_.appendChild(canvas);
+			statuses_canvas.appendChild(canvas);
 			info_canvas_sub_[key] = canvas;
 		}
 	};
 
 	this.refreshDoorStatus = function(group_id, status) {
 		drawDoorStatus(info_canvas_sub_[group_id], COLORS[group_id -1], status);
+	};
+
+	this.refreshLife = function(remaining_lifes, total_lifes) {
+		if (total_lifes < 0) {
+			return;
+		}
+		var canvas = info_canvas_.getElementsByClassName("gamerunner-life")[0];
+		canvas.width = LIFE_SIZE;
+		canvas.height = LIFE_SIZE;
+		var ctx = canvas.getContext("2d");
+		ctx.fillStyle = "#ffffff";
+		ctx.fillRect(0, 0, LIFE_SIZE, LIFE_SIZE);
+		ctx.beginPath();
+		ctx.strokeStyle = "#000000";
+		ctx.lineWidth = 5;
+		ctx.arc(LIFE_SIZE/2, LIFE_SIZE/2, LIFE_SIZE/2 -5, -0.5*Math.PI, 2*Math.PI*remaining_lifes/total_lifes -0.5*Math.PI);
+		ctx.stroke();
+		ctx.font = '40pt Calibri';
+      	ctx.textAlign = 'center';
+      	ctx.fillStyle = "#000000";
+      	ctx.fillText(remaining_lifes, LIFE_SIZE/2, LIFE_SIZE/2 +20);
 	};
 	
 	this.displayCharacter = function(x, y) {

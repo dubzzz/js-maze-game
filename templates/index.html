@@ -26,7 +26,7 @@
             [-1,97, 1,97, 0],
             [98, 0, 0, 2, 1]];
         var displayer = new WebDisplayer(document.getElementById('screen'), document.getElementById('more'));
-        game = new GameRunner(displayer, raw);
+        game = new GameRunner(displayer, raw, 18);
       }
       
       window.addEventListener("keydown", function(e) {
@@ -55,7 +55,10 @@
     <div class="container">
       <div id="game">
         <canvas id="screen" height="0" width="0"></canvas>
-        <div id="more"></div>
+        <div id="more" style="display:inline-block;width:195px;">
+          <canvas class="gamerunner-life"></canvas>
+          <div class="gamerunner-statuses"></div>
+        </div>
       </div>
     </div>
   </body>

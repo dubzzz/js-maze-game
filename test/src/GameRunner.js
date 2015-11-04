@@ -8,6 +8,8 @@ var Displayer = function() {
 	this.map_ = undefined;
 	this.doors_duration_ = undefined;
 	this.doors_ = undefined;
+	this.remaining_lifes_ = undefined;
+	this.total_lifes_ = undefined;
 
 	this.initDoorsStatus = function(doors_duration) {
 		self.doors_ = {};
@@ -21,6 +23,10 @@ var Displayer = function() {
 	};
 	this.refreshDoorStatus = function(group_id, status) {
 		self.doors_[group_id] = status;
+	};
+	this.refreshLife = function(remaining_lifes, total_lifes) {
+		self.remaining_lifes_ = remaining_lifes;
+		self.total_lifes_ = total_lifes;
 	};
 	this.displayCell = function(x, y, cell, group_id) {
 		self.map_[y] = self.map_[y].substr(0, x) + cell + self.map_[y].substr(x+1);
@@ -44,13 +50,13 @@ describe('Move on mazes', function() {
 	
 	it('Start point', function(done) {
 		var raw = [[98,99]];
-		var runner = new GameRunner(displayer, raw);
+		var runner = new GameRunner(displayer, raw, -1);
 		runner.getStart().should.be.equal(0);
 		done();
 	});
 	it('End point', function(done) {
 		var raw = [[98,99]];
-		var runner = new GameRunner(displayer, raw);
+		var runner = new GameRunner(displayer, raw, -1);
 		runner.getEnd().should.be.equal(1);
 		done();
 	});
@@ -59,7 +65,7 @@ describe('Move on mazes', function() {
 
 	it('One cell map', function(done) {
 		var raw = [[98]];
-		var runner = new GameRunner(displayer, raw);
+		var runner = new GameRunner(displayer, raw, -1);
 		runner.move('up').should.be.false;
 		runner.move('down').should.be.false;
 		runner.move('left').should.be.false;
@@ -73,7 +79,7 @@ describe('Move on mazes', function() {
 			[ 0, 0, 0,98, 0, 0],
 			[ 0, 0, 0, 0, 0, 0]];
 		
-		var runner = new GameRunner(displayer, raw);
+		var runner = new GameRunner(displayer, raw, -1);
 		runner.move('up').should.be.true;
 		runner.move('up').should.be.true;
 		runner.move('up').should.be.false;
@@ -104,7 +110,7 @@ describe('Move on mazes', function() {
 			[ 0, 0, 1,98, 0,97],
 			[ 0, 0, 0, 0, 0, 0]];
 		
-		var runner = new GameRunner(displayer, raw);
+		var runner = new GameRunner(displayer, raw, -1);
 		runner.move('right').should.be.true;
 		runner.move('right').should.be.false;
 		done();
@@ -116,7 +122,7 @@ describe('Move on mazes', function() {
 			[ 0, 0, 1,98, 0,97],
 			[ 0, 0, 0, 0, 0, 0]];
 		
-		var runner = new GameRunner(displayer, raw);
+		var runner = new GameRunner(displayer, raw, -1);
 		runner.move('left').should.be.false;
 		done();
 	});
@@ -125,7 +131,7 @@ describe('Move on mazes', function() {
 
 	it('Open one door', function(done) {
 		var raw = [[98,-1, 1,99]];
-		var runner = new GameRunner(displayer, raw);
+		var runner = new GameRunner(displayer, raw, -1);
 		runner.move('right').should.be.true;
 		runner.move('right').should.be.true;
 		runner.move('right').should.be.true;
@@ -133,7 +139,7 @@ describe('Move on mazes', function() {
 	});
 	it('Max door time', function(done) {
 		var raw = [[98,-1, 0, 0, 0, 0, 0, 0, 0, 0, 1,99]];
-		var runner = new GameRunner(displayer, raw);
+		var runner = new GameRunner(displayer, raw, -1);
 		runner.move('right').should.be.true;
 		runner.move('right').should.be.true;
 		runner.move('right').should.be.true;
@@ -149,7 +155,7 @@ describe('Move on mazes', function() {
 	});
 	it('Max door time +1 (block cannot be closed)', function(done) {
 		var raw = [[98,-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,99]];
-		var runner = new GameRunner(displayer, raw);
+		var runner = new GameRunner(displayer, raw, -1);
 		runner.move('right').should.be.true;
 		runner.move('right').should.be.true;
 		runner.move('right').should.be.true;
@@ -166,7 +172,7 @@ describe('Move on mazes', function() {
 	});
 	it('Too slow to reach the door', function(done) {
 		var raw = [[98,-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,99]];
-		var runner = new GameRunner(displayer, raw);
+		var runner = new GameRunner(displayer, raw, -1);
 		runner.move('right').should.be.true;
 		runner.move('right').should.be.true;
 		runner.move('right').should.be.true;
@@ -186,7 +192,7 @@ describe('Move on mazes', function() {
 			[-1,97,-2,97,-3,97,97],
 			[ 0,97, 1,97, 2,97,97],
 			[98, 0, 0, 0, 0, 3,99]];
-		var runner = new GameRunner(displayer, raw);
+		var runner = new GameRunner(displayer, raw, -1);
 		runner.move('up').should.be.true;
 		runner.move('up').should.be.true;
 		runner.move('down').should.be.true;
@@ -212,7 +218,7 @@ describe('Move on mazes', function() {
 
 	it('Move on a reversed door', function(done) {
 		var raw = [[98, 0,11,99]];
-		var runner = new GameRunner(displayer, raw);
+		var runner = new GameRunner(displayer, raw, -1);
 		runner.move('right').should.be.true;
 		runner.move('right').should.be.true;
 		runner.move('right').should.be.true;
@@ -220,7 +226,7 @@ describe('Move on mazes', function() {
 	});
 	it('Activated reversed door is a wall', function(done) {
 		var raw = [[98,-1,11,99]];
-		var runner = new GameRunner(displayer, raw);
+		var runner = new GameRunner(displayer, raw, -1);
 		runner.move('right').should.be.true;
 		runner.move('right').should.be.false;
 		done();
@@ -230,13 +236,13 @@ describe('Move on mazes', function() {
 
 	it('Full refresh at start', function(done) {
 		var raw = [[98, 0, 0,99]];
-		var runner = new GameRunner(displayer, raw);
+		var runner = new GameRunner(displayer, raw, -1);
 		displayer.map_.should.be.eql(["C  e"]);
 		done();
 	});
 	it('Refresh previous cell on move', function(done) {
 		var raw = [[98, 0, 0,99]];
-		var runner = new GameRunner(displayer, raw);
+		var runner = new GameRunner(displayer, raw, -1);
 		displayer.map_.should.be.eql(["C  e"]);
 		runner.move('right');
 		displayer.map_.should.be.eql(["sC e"]);
@@ -246,7 +252,7 @@ describe('Move on mazes', function() {
 	});
 	it('Full refresh at restart', function(done) {
 		var raw = [[98, 0, 0,99]];
-		var runner = new GameRunner(displayer, raw);
+		var runner = new GameRunner(displayer, raw, -1);
 		runner.move('right');
 		runner.move('right');
 		runner.restart();
@@ -255,7 +261,7 @@ describe('Move on mazes', function() {
 	});
 	it('Update doors when pushing button', function(done) {
 		var raw = [[98, 0,-1, 1, 1,11,99]];
-		var runner = new GameRunner(displayer, raw);
+		var runner = new GameRunner(displayer, raw, -1);
 		displayer.map_.should.be.eql(["C bddre"]);
 		runner.move('right');
 		runner.move('right');
@@ -264,7 +270,7 @@ describe('Move on mazes', function() {
 	});
 	it('Doors closed after restart', function(done) {
 		var raw = [[98, 0,-1, 1, 1,11,99]];
-		var runner = new GameRunner(displayer, raw);
+		var runner = new GameRunner(displayer, raw, -1);
 		runner.move('right');
 		runner.move('right');
 		runner.restart();
@@ -276,21 +282,21 @@ describe('Move on mazes', function() {
 
 	it('Full refresh at start', function(done) {
 		var raw = [[98, 1, 5,99]];
-		var runner = new GameRunner(displayer, raw);
+		var runner = new GameRunner(displayer, raw, -1);
 		displayer.doors_.should.be.eql({1: 0, 5: 0});
 		displayer.doors_duration_.should.be.eql({1: DOOR_TIME, 5: DOOR_TIME});
 		done();
 	});
 	it('Button triggers a refresh of door\' status', function(done) {
 		var raw = [[98,-5, 5,99]];
-		var runner = new GameRunner(displayer, raw);
+		var runner = new GameRunner(displayer, raw, -1);
 		runner.move('right');
 		displayer.doors_.should.be.eql({5: DOOR_TIME});
 		done();
 	});
 	it('Door\' status decreases when moving away', function(done) {
 		var raw = [[98,-5, 0, 0, 0, 0, 0, 0, 5,99]];
-		var runner = new GameRunner(displayer, raw);
+		var runner = new GameRunner(displayer, raw, -1);
 		runner.move('right');
 		displayer.doors_.should.be.eql({5: DOOR_TIME});
 		runner.move('right');
@@ -301,7 +307,7 @@ describe('Move on mazes', function() {
 	});
 	it('Door\' status decreases until 0', function(done) {
 		var raw = [[98,-5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5,99]];
-		var runner = new GameRunner(displayer, raw);
+		var runner = new GameRunner(displayer, raw, -1);
 		runner.move('right');
 		runner.move('right');
 		runner.move('right');
@@ -320,10 +326,57 @@ describe('Move on mazes', function() {
 	});
 	it('Door\' status resetted when game is restarted', function(done) {
 		var raw = [[98,-5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5,99]];
-		var runner = new GameRunner(displayer, raw);
+		var runner = new GameRunner(displayer, raw, -1);
 		runner.move('right');
 		runner.restart();
 		displayer.doors_.should.be.eql({5: 0});
+		done();
+	});
+
+	/** Life status **/
+
+	it('Full refresh at start', function(done) {
+		var raw = [[98, 1, 5,99]];
+		var runner = new GameRunner(displayer, raw, 5);
+		displayer.remaining_lifes_.should.be.eql(5);
+		displayer.total_lifes_.should.be.eql(5);
+		done();
+	});
+	it('Remaining decreases when moving', function(done) {
+		var raw = [[98, 0, 0,99]];
+		var runner = new GameRunner(displayer, raw, 5);
+		runner.move('right');
+		runner.move('right');
+		displayer.remaining_lifes_.should.be.eql(3);
+		displayer.total_lifes_.should.be.eql(5);
+		done();
+	});
+	it('Remaining does not decrease when move is forbidden', function(done) {
+		var raw = [[98, 0, 0,99]];
+		var runner = new GameRunner(displayer, raw, 5);
+		runner.move('left');
+		displayer.remaining_lifes_.should.be.eql(5);
+		displayer.total_lifes_.should.be.eql(5);
+		done();
+	});
+	it('Remaining resetted when restarting game', function(done) {
+		var raw = [[98, 0, 0,99]];
+		var runner = new GameRunner(displayer, raw, 5);
+		runner.move('right');
+		runner.move('right');
+		runner.restart();
+		displayer.remaining_lifes_.should.be.eql(5);
+		displayer.total_lifes_.should.be.eql(5);
+		done();
+	});
+	it('Impossible to move as soon as remaining equals zero', function(done) {
+		var raw = [[98, 0, 0,99]];
+		var runner = new GameRunner(displayer, raw, 1);
+		runner.move('right').should.be.true;
+		runner.move('right').should.be.false;
+		runner.move('right').should.be.false;
+		runner.restart();
+		runner.move('right').should.be.true;
 		done();
 	});
 });
