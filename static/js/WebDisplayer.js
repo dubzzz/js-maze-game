@@ -164,7 +164,7 @@ var WebDisplayer = function(screen_canvas, info_canvas) {
 		ctx.drawImage(img, start_x, start_y);
 	}
 
-	this.display = function(map, mapping_button_to_id, mapping_door_to_id) {
+	this.display = function(map, mapping_button_to_id, mapping_door_to_id, mapping_reversed_to_id) {
 		screen_canvas_.width = SIZE * map[0].length;
 		screen_canvas_.height = SIZE * map.length;
 
@@ -176,7 +176,10 @@ var WebDisplayer = function(screen_canvas, info_canvas) {
 						: (
 							(mapping_door_to_id[y] !== undefined && mapping_door_to_id[y][x] !== undefined)
 							? mapping_door_to_id[y][x]
-							: undefined));
+							: (
+								(mapping_reversed_to_id[y] !== undefined && mapping_reversed_to_id[y][x] !== undefined)
+								? mapping_reversed_to_id[y][x]
+								: undefined)));
 			}
 		}
 	};
