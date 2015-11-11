@@ -35,7 +35,7 @@
       }
 
       function refreshGroupCells() {
-        current_group_id = document.getElementById('board_group_id').value;
+        current_group_id = parseInt(document.getElementById('board_group_id').value);
 
         {
           var displayer = new WebDisplayer(document.getElementById('elt_button_cell'), undefined);
