@@ -164,6 +164,10 @@ var WebDisplayer = function(screen_canvas, info_canvas) {
 		ctx.drawImage(img, start_x, start_y);
 	}
 
+	this.getCorrespondingCell = function(event) {
+		return {'x': Math.floor(event.clientX/SIZE), 'y': Math.floor(event.clientY/SIZE)};
+	};
+
 	this.display = function(map, mapping_button_to_id, mapping_door_to_id, mapping_reversed_to_id) {
 		screen_canvas_.width = SIZE * map[0].length;
 		screen_canvas_.height = SIZE * map.length;

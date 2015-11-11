@@ -36,15 +36,6 @@
 
       function refreshGroupCells() {
         current_group_id = document.getElementById('board_group_id').value;
-        if (selected < 0) {
-          selected = -current_group_id;
-        }
-        else if (selected > 0 && selected <= 10) {
-          selcted = current_group_id;
-        }
-        else if (selected > 10 && selected <= 20) {
-          selcted = 10 + current_group_id;
-        }
 
         {
           var displayer = new WebDisplayer(document.getElementById('elt_button_cell'), undefined);
@@ -66,32 +57,7 @@
       }
 
       function select(choosen, value) {
-        switch (value) {
-          case 's':
-            selected = 98;
-            break;
-          case 'e':
-            selected = 99;
-            break;
-          case ' ':
-            selected = 0;
-            break;
-          case '#':
-            selected = 97;
-            break;
-          case '#':
-            selected = 97;
-            break;
-          case 'b':
-            selected = -current_group_id;
-            break;
-          case 'd':
-            selected = current_group_id;
-            break;
-          case 'r':
-            selected = 10 + current_group_id;
-            break;
-        }
+        selected = value;
 
         var elts = document.getElementsByClassName("game_element");
         for (var i = 0 ; i < elts.length ; ++i) {
@@ -99,12 +65,46 @@
         }
         choosen.setAttribute("data-selected", undefined);
       }
+
+      function clickScreen(event) {
+        if (event.button == 0) {
+          if (selected !== undefined) {
+            editor.set(event, selected, current_group_id);
+          }
+        }
+        else if (event.button == 2) {
+          editor.set(event, ' ', current_group_id);
+        }
+      }
+
+      function preventRightClick(event) {
+        if (event.button == 2) {
+          clickScreen(event);
+          return false;
+        }
+        return true;
+      }
+
+      function preventMenu(event) {
+        if(event.preventDefault != undefined) {
+          event.preventDefault();
+        }
+        if(event.stopPropagation != undefined) {
+          event.stopPropagation();
+        }
+        return false;
+      }
     </script>
   </head>
   <body onload="javascript:initEditor()">
     <div class="container">
       <div id="game">
         <canvas id="screen" height="0" width="0"></canvas>
+        <script type="text/javascript">
+          document.getElementById('screen').addEventListener("click", clickScreen);
+          document.getElementById('screen').addEventListener("mousedown", preventRightClick);
+          document.getElementById('screen').addEventListener("contextmenu", preventMenu);
+        </script>
       </div>
       <div id="game_config">
         <div class="game_parameter">

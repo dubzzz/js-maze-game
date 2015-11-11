@@ -50,6 +50,43 @@ var WebEditor = function(displayer, width, height) {
 		display();
 	};
 
+	this.set = function(event, cell, group_id) {
+		var cellXY = displayer_.getCorrespondingCell(event);
+		var x = cellXY['x'];
+		var y = cellXY['y'];
+		if (y < 0 || y >= raw_data.length || x < 0 || x >= raw_data[0].length) {
+			return;
+		}
+
+		switch (cell) {
+          case 's':
+            raw_data[y][x] = 98;
+            break;
+          case 'e':
+            raw_data[y][x] = 99;
+            break;
+          case ' ':
+            raw_data[y][x] = 0;
+            break;
+          case '#':
+            raw_data[y][x] = 97;
+            break;
+          case '#':
+            raw_data[y][x] = 97;
+            break;
+          case 'b':
+            raw_data[y][x] = -group_id;
+            break;
+          case 'd':
+            raw_data[y][x] = group_id;
+            break;
+          case 'r':
+            raw_data[y][x] = 10 + group_id;
+            break;
+        }
+        displayer_.displayCell(x, y, cell, group_id);
+	};
+
 	{
 		self.resize(width, height);
 	}
