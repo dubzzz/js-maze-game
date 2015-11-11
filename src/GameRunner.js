@@ -211,7 +211,6 @@ var GameRunner = function(displayer, raw_data, total_lifes, door_times) {
 			var key = keys[i];
 			door_times_[key] = door_times !== undefined && door_times.hasOwnProperty(key) ? door_times[key] : DOOR_TIME;
 		}
-		console.log(door_times_);
 		this.restart();
 	}
 };
