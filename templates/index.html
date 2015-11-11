@@ -21,6 +21,12 @@
       var MazeSolver = MazeGame.MazeSolver;
       var game = undefined;
 
+      function updateHash(raw_data) {
+        var map_strings = MazeGame.rawDataToStrings(raw_data);
+        window.location.hash = "#" + map_strings[0] + "," + map_strings[1];
+        document.getElementById('edit_level').setAttribute("href", "/edit" + window.location.hash);
+      }
+
       var initGame = function() {
         var displayer = new WebDisplayer(document.getElementById('screen'), document.getElementById('more'));
         var hash = window.location.hash.substring(1);
@@ -31,6 +37,7 @@
           var door_times = {};
           var solver = new MazeSolver(raw, door_times);
           game = new GameRunner(displayer, raw, solver.minimumMoves(), door_times);
+          updateHash(raw);
         }
         else {
           var raw = [
@@ -41,6 +48,7 @@
               [98, 0, 0, 2, 1]];
           var door_times = {1: 10, 2: 4};
           game = new GameRunner(displayer, raw, 18, door_times);
+          updateHash(raw);
         }
       }
       
@@ -74,6 +82,9 @@
           <canvas class="gamerunner-life"></canvas>
           <div class="gamerunner-statuses"></div>
         </div>
+      </div>
+      <div>
+        <a id="edit_level" href="#" target="_blank">Edit this level</a>
       </div>
     </div>
   </body>
