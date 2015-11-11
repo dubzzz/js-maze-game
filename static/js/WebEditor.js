@@ -3,6 +3,7 @@
 var MapReader = typeof require === 'undefined' ? MazeGame.MapReader : require('./MapReader.js').MapReader;
 var linearToXY = typeof require === 'undefined' ? MazeGame.linearToXY : require('./MapReader.js').linearToXY;
 var xyToLinear = typeof require === 'undefined' ? MazeGame.xyToLinear : require('./MapReader.js').xyToLinear;
+var rawDataToStrings = typeof require === 'undefined' ? MazeGame.rawDataToStrings : require('./MapReader.js').rawDataToStrings;
 
 var WebEditor = function(displayer, width, height) {
 	var self = this;
@@ -32,6 +33,15 @@ var WebEditor = function(displayer, width, height) {
 				, revampMapping(reader, reader.getMappingDoorId())
 				, revampMapping(reader, reader.getMappingReversedId()));
 	};
+
+	this.buildMapStrings = function() {
+		return rawDataToStrings(raw_data);
+	}
+
+	this.reset = function(input_raw) {
+		raw_data = input_raw;
+		display();
+	}
 
 	this.resize = function(width, height) {
 		raw_data = raw_data.splice(0, height);
