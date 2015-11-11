@@ -8,7 +8,9 @@
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     
+    <script src="/static/node/Heap.js"></script>
     <script src="/static/node/MapReader.js"></script>
+    <script src="/static/node/MazeSolver.js"></script>
     <script src="/static/node/GameRunner.js"></script>
     <script src="/static/js/WebDisplayer.js"></script>
 
@@ -16,6 +18,7 @@
       var GameRunner = MazeGame.GameRunner;
       var MapReader = MazeGame.MapReader;
       var WebDisplayer = MazeGame.WebDisplayer;
+      var MazeSolver = MazeGame.MazeSolver;
       var game = undefined;
 
       var initGame = function() {
@@ -26,7 +29,8 @@
         if (map_strings.length == 2) {
           var raw = MazeGame.stringsToRawData(map_strings);
           var door_times = {};
-          game = new GameRunner(displayer, raw, 100, door_times);
+          var solver = new MazeSolver(raw, door_times);
+          game = new GameRunner(displayer, raw, solver.minimumMoves(), door_times);
         }
         else {
           var raw = [
