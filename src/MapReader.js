@@ -24,6 +24,59 @@ function linearToXY(linear, size_x) {
 	return [x, y];
 }
 
+function toCharValue(value) {
+	if (value < 10)
+		return value.toString();
+	else
+		return String.fromCharCode(value-10 + "a".charCodeAt(0));
+}
+
+function stringsToRawData(strings) {
+	var width = strings[0];
+	var raw_data = new Array();
+
+	mapping_string_to_cell = {"0": 0, "1": 98, "2": 99, "3": 97};
+	for (var i = 0 ; i < MAX_DOORS ; ++i) {
+		var shift = 4 + 3*i;
+		mapping_string_to_cell[toCharValue(shift)] = i+1;
+		mapping_string_to_cell[toCharValue(shift+1)] = -i-1;
+		mapping_string_to_cell[toCharValue(shift+2)] = MAX_DOORS+i+1;
+	}
+	
+	var string_map = strings[1];
+	var current_line = new Array();
+	for (var i = 0 ; i < string_map.length ; ++i) {
+		current_line.push(mapping_string_to_cell[string_map[i]]);
+		if (current_line.length == width) {
+			raw_data.push(current_line);
+			current_line = new Array();
+		}
+	}
+	return raw_data;
+}
+
+function rawDataToStrings(raw_data) {
+	var strings = new Array();
+	strings.push(raw_data[0].length.toString());
+
+	mapping_cell_to_string = {0: "0", 98: "1", 99: "2", 97: "3"};
+	for (var i = 0 ; i < MAX_DOORS ; ++i) {
+		var shift = 4 + 3*i;
+		mapping_cell_to_string[i+1] = toCharValue(shift);
+		mapping_cell_to_string[-i-1] = toCharValue(shift+1);
+		mapping_cell_to_string[MAX_DOORS+i+1] = toCharValue(shift+2);
+	}
+	
+	var string_map = "";
+	for (var y = 0 ; y < raw_data.length ; ++y) {
+		for (var x = 0 ; x < raw_data[0].length ; ++x) {
+			string_map += mapping_cell_to_string[ raw_data[y][x] ];
+		}
+	}
+	strings.push(string_map);
+	return strings;
+}
+
 var MapReader = function(raw_data) {
 	var self = this;
 	var size_x_ = raw_data[0].length;
@@ -133,6 +186,8 @@ exports.MAX_DOORS = MAX_DOORS;
 exports.xyToLinear = xyToLinear;
 exports.linearToXY = linearToXY;
 exports.MapReader = MapReader;
+exports.stringsToRawData = stringsToRawData;
+exports.rawDataToStrings = rawDataToStrings;
 }(typeof exports === 'undefined'
 		? (this['MazeGame'] === undefined ? this['MazeGame']={} : this['MazeGame'])
 		: exports));
