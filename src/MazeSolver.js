@@ -220,8 +220,8 @@ var MazeSolver = function(raw_data, door_times) {
 	}
 };
 
-module.exports.DOOR_TIME = DOOR_TIME;
-module.exports.MazeSolver = MazeSolver;
+exports.DOOR_TIME = DOOR_TIME;
+exports.MazeSolver = MazeSolver;
 }(typeof exports === 'undefined'
 		? (this['MazeGame'] === undefined ? this['MazeGame']={} : this['MazeGame'])
 		: exports));
