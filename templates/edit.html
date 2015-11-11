@@ -19,6 +19,7 @@
       var WebEditor = MazeGame.WebEditor;
 
       var editor = undefined;
+      var current_group_id = 1;
       var selected = undefined;
 
       function resizeEditor() {
@@ -33,8 +34,64 @@
         }
       }
 
+      function refreshGroupCells() {
+        current_group_id = document.getElementById('board_group_id').value;
+        if (selected < 0) {
+          selected = -current_group_id;
+        }
+        else if (selected > 0 && selected <= 10) {
+          selcted = current_group_id;
+        }
+        else if (selected > 10 && selected <= 20) {
+          selcted = 10 + current_group_id;
+        }
+
+        {
+          var displayer = new WebDisplayer(document.getElementById('elt_button_cell'), undefined);
+          displayer.display(["b"], {0: {0: current_group_id}}, {}, {});
+        }
+        {
+          var displayer = new WebDisplayer(document.getElementById('elt_door_cell'), undefined);
+          displayer.display(["d"], {}, {0: {0: current_group_id}}, {});
+        }
+        {
+          var displayer = new WebDisplayer(document.getElementById('elt_reversed_cell'), undefined);
+          displayer.display(["r"], {}, {}, {0: {0: current_group_id}});
+        }
+      }
+
+      function initEditor() {
+        resizeEditor();
+        refreshGroupCells();
+      }
+
       function select(choosen, value) {
-        selected = value;
+        switch (value) {
+          case 's':
+            selected = 98;
+            break;
+          case 'e':
+            selected = 99;
+            break;
+          case ' ':
+            selected = 0;
+            break;
+          case '#':
+            selected = 97;
+            break;
+          case '#':
+            selected = 97;
+            break;
+          case 'b':
+            selected = -current_group_id;
+            break;
+          case 'd':
+            selected = current_group_id;
+            break;
+          case 'r':
+            selected = 10 + current_group_id;
+            break;
+        }
 
         var elts = document.getElementsByClassName("game_element");
         for (var i = 0 ; i < elts.length ; ++i) {
@@ -44,7 +101,7 @@
       }
     </script>
   </head>
-  <body onload="javascript:resizeEditor()">
+  <body onload="javascript:initEditor()">
     <div class="container">
       <div id="game">
         <canvas id="screen" height="0" width="0"></canvas>
@@ -58,11 +115,20 @@
           <span>Height: </span>
           <input id="board_height" type="number" name="height" min="1" max="20" value="5" onchange="javascript:resizeEditor()" />
         </div>
+        <div class="game_parameter">
+          <span>Group id: </span>
+          <input id="board_group_id" type="number" name="height" min="1" max="6" value="1" onchange="javascript:refreshGroupCells()" />
+        </div>
         <div class="game_elements">
-          <div><img class="game_element" src="/static/img/start.png" onclick="javascript:select(this, 98)" /></div>
-          <div><img class="game_element" src="/static/img/end.png" onclick="javascript:select(this, 99)" /></div>
-          <div><img class="game_element" src="/static/img/path.png" onclick="javascript:select(this, 0)" /></div>
-          <div><img class="game_element" src="/static/img/wall.png" onclick="javascript:select(this, 97)" /></div>
+          <div><img class="game_element" src="/static/img/start.png" onclick="javascript:select(this, 's')" /></div>
+          <div><img class="game_element" src="/static/img/end.png" onclick="javascript:select(this, 'e')" /></div>
+          <div><img class="game_element" src="/static/img/path.png" onclick="javascript:select(this, ' ')" /></div>
+          <div><img class="game_element" src="/static/img/wall.png" onclick="javascript:select(this, '#')" /></div>
+        </div>
+        <div class="game_elements">
+          <div><canvas class="game_element" id="elt_button_cell" onclick="javascript:select(this, 'b')" /></div>
+          <div><canvas class="game_element" id="elt_door_cell" onclick="javascript:select(this, 'd')" /></div>
+          <div><canvas class="game_element" id="elt_reversed_cell" onclick="javascript:select(this, 'r')" /></div>
         </div>
       </div>
     </div>
