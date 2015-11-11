@@ -55,6 +55,7 @@
       function updateHash() {
         var map_strings = editor.buildMapStrings();
         window.location.hash = "#" + map_strings[0] + "," + map_strings[1];
+        document.getElementById('share_level').setAttribute("href", "/" + window.location.hash);
       }
 
       function resizeEditor() {
@@ -136,6 +137,9 @@
           document.getElementById('screen').addEventListener("mousedown", preventRightClick);
           document.getElementById('screen').addEventListener("contextmenu", preventMenu);
         </script>
+      </div>
+      <div>
+        <a id="share_level" href="#" target="_blank">Share this level</a>
       </div>
       <div id="game_config">
         <div class="game_parameter">
