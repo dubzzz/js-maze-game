@@ -24,6 +24,44 @@ function linearToXY(linear, size_x) {
 	return [x, y];
 }
 
+var compression_patterns = [
+	{'from': "00", 'to': "A"},
+	{'from': "33", 'to': "B"},
+	
+	{'from': "03", 'to': "C"},
+	{'from': "30", 'to': "D"},
+	
+	{'from': "0A", 'to': "E"},
+	{'from': "A0", 'to': "F"},
+	{'from': "3A", 'to': "G"},
+	{'from': "A3", 'to': "H"},
+	{'from': "AA", 'to': "I"},
+
+	{'from': "0B", 'to': "J"},
+	{'from': "B0", 'to': "K"},
+	{'from': "3B", 'to': "L"},
+	{'from': "B3", 'to': "M"},
+	{'from': "BB", 'to': "N"},
+];
+
+function compress(value) {
+	var out = value;
+	for (var i = 0 ; i < compression_patterns.length ; ++i) {
+		var pattern = compression_patterns[i];
+		out = out.replace(new RegExp(pattern['from'], "g"), pattern['to']);
+	}
+	return out;
+}
+
+function uncompress(value) {
+	var out = value;
+	for (var i = compression_patterns.length -1 ; i >= 0  ; --i) {
+		var pattern = compression_patterns[i];
+		out = out.replace(new RegExp(pattern['to'], "g"), pattern['from']);
+	}
+	return out;
+}
+
 function toCharValue(value) {
 	if (value < 10)
 		return value.toString();
@@ -43,7 +81,7 @@ function stringsToRawData(strings) {
 		mapping_string_to_cell[toCharValue(shift+2)] = MAX_DOORS+i+1;
 	}
 	
-	var string_map = strings[1];
+	var string_map = uncompress(strings[1]);
 	var current_line = new Array();
 	for (var i = 0 ; i < string_map.length ; ++i) {
 		current_line.push(mapping_string_to_cell[string_map[i]]);
@@ -73,7 +111,7 @@ function rawDataToStrings(raw_data) {
 			string_map += mapping_cell_to_string[ raw_data[y][x] ];
 		}
 	}
-	strings.push(string_map);
+	strings.push(compress(string_map));
 	return strings;
 }
 
