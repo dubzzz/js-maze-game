@@ -22,16 +22,45 @@
       var current_group_id = 1;
       var selected = undefined;
 
+      function readHash() {
+        var hash = window.location.hash.substring(1);
+        var map_strings = hash.split(",");
+
+        if (map_strings.length == 2) {
+          var raw_data = MazeGame.stringsToRawData(map_strings);
+          var width = raw_data[0].length;
+          var height = raw_data.length;
+          document.getElementById('board_width').value = width;
+          document.getElementById('board_height').value = height;
+          if (editor === undefined) {
+            var displayer = new WebDisplayer(document.getElementById('screen'), undefined);
+            editor = new WebEditor(displayer, width, height);
+
+          }
+          editor.reset(raw_data);
+        }
+        else {
+          var width = document.getElementById('board_width').value;
+          var height = document.getElementById('board_height').value;
+          if (editor === undefined) {
+            var displayer = new WebDisplayer(document.getElementById('screen'), undefined);
+            editor = new WebEditor(displayer, width, height);
+          }
+          else {
+            editor.resize(width, height);
+          }
+        }
+      }
+
+      function updateHash() {
+        var map_strings = editor.buildMapStrings();
+        window.location.hash = "#" + map_strings[0] + "," + map_strings[1];
+      }
+
       function resizeEditor() {
         var width = document.getElementById('board_width').value;
         var height = document.getElementById('board_height').value;
-        if (editor === undefined) {
-          var displayer = new WebDisplayer(document.getElementById('screen'), undefined);
-          editor = new WebEditor(displayer, width, height);
-        }
-        else {
-          editor.resize(width, height);
-        }
+        editor.resize(width, height);
       }
 
       function refreshGroupCells() {
@@ -52,8 +81,9 @@
       }
 
       function initEditor() {
-        resizeEditor();
+        readHash();
         refreshGroupCells();
+        updateHash();
       }
 
       function select(choosen, value) {
@@ -75,6 +105,7 @@
         else if (event.button == 2) {
           editor.set(event, ' ', current_group_id);
         }
+        updateHash();
       }
 
       function preventRightClick(event) {

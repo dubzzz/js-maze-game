@@ -19,15 +19,25 @@
       var game = undefined;
 
       var initGame = function() {
-        var raw = [
-            [99, 0, 2, 0, 0],
-            [11,97,12,97, 0],
-            [ 0,97,-2,97,-2],
-            [-1,97, 1,97, 0],
-            [98, 0, 0, 2, 1]];
-        var door_times = {1: 10, 2: 4};
         var displayer = new WebDisplayer(document.getElementById('screen'), document.getElementById('more'));
-        game = new GameRunner(displayer, raw, 18, door_times);
+        var hash = window.location.hash.substring(1);
+        var map_strings = hash.split(",");
+
+        if (map_strings.length == 2) {
+          var raw = MazeGame.stringsToRawData(map_strings);
+          var door_times = {};
+          game = new GameRunner(displayer, raw, 100, door_times);
+        }
+        else {
+          var raw = [
+              [99, 0, 2, 0, 0],
+              [11,97,12,97, 0],
+              [ 0,97,-2,97,-2],
+              [-1,97, 1,97, 0],
+              [98, 0, 0, 2, 1]];
+          var door_times = {1: 10, 2: 4};
+          game = new GameRunner(displayer, raw, 18, door_times);
+        }
       }
       
       window.addEventListener("keydown", function(e) {
