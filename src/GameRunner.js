@@ -151,6 +151,33 @@ var GameRunner = function(displayer, raw_data, total_lifes, door_times) {
 		return true;
 	};
 
+	this.moveClick = function(event) {
+		var cellXY = displayer_.getCorrespondingCell(event);
+		var x = cellXY['x'];
+		var y = cellXY['y'];
+		if (y < 0 || y >= reader_.getSizeY() || x < 0 || x >= reader_.getSizeX()) {
+			return;
+		}
+
+		if(pos_x_ == x) {
+			if (pos_y_ -1 == y) {
+				return self.move('up');
+			}
+			else if (pos_y_ +1 == y) {
+				return self.move('down');
+			}
+		}
+		else if (pos_y_ == y) {
+			if (pos_x_ -1 == x) {
+				return self.move('left');
+			}
+			else if (pos_x_ +1 == x) {
+				return self.move('right');
+			}
+		}
+		return false;
+	};
+
 	this.restart = function() {
 		num_moves_ = 0;
 		
