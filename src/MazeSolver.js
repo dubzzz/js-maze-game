@@ -109,11 +109,11 @@ var MazeSolver = function(raw_data, door_times) {
 					x -= 1;
 					break;
 				case TOP:
-					miniPath.push("top");
+					miniPath.push("up");
 					y += 1;
 					break;
 				case BOTTOM:
-					miniPath.push("bottom");
+					miniPath.push("down");
 					y -= 1;
 					break;
 				default:

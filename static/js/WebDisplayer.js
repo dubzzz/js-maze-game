@@ -74,7 +74,7 @@ var WebDisplayer = function(screen_canvas, info_canvas) {
 	this.initDoorsStatus = function(doors_duration) {
 		var statuses_canvas = info_canvas_.getElementsByClassName("gamerunner-statuses")[0];
 		while (statuses_canvas.childNodes.length > 0) {
-			statuses_canvas.removeChildren(statuses_canvas.childNodes[0]);
+			statuses_canvas.removeChild(statuses_canvas.childNodes[0]);
 		}
 		info_canvas_sub_ = {};
 		var keys = Object.keys(doors_duration);

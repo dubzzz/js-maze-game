@@ -20,6 +20,7 @@
       var WebDisplayer = MazeGame.WebDisplayer;
       var MazeSolver = MazeGame.MazeSolver;
       var game = undefined;
+      var solver = undefined;
 
       function updateHash(raw_data) {
         var map_strings = MazeGame.rawDataToStrings(raw_data);
@@ -32,28 +33,42 @@
         var hash = window.location.hash.substring(1);
         var map_strings = hash.split(",");
 
+        var raw = undefined;
+        var door_times = {};
         if (map_strings.length == 2) {
-          var raw = MazeGame.stringsToRawData(map_strings);
-          var door_times = {};
-          var solver = new MazeSolver(raw, door_times);
-          game = new GameRunner(displayer, raw, solver.minimumMoves(), door_times);
-          updateHash(raw);
+          raw = MazeGame.stringsToRawData(map_strings);
+          door_times = {};
         }
         else {
-          var raw = [
+          raw = [
               [99, 0, 2, 0, 0],
               [11,97,12,97, 0],
               [ 0,97,-2,97,-2],
               [-1,97, 1,97, 0],
               [98, 0, 0, 2, 1]];
-          var door_times = {1: 10, 2: 4};
-          game = new GameRunner(displayer, raw, 18, door_times);
-          updateHash(raw);
+          door_times = {1: 10, 2: 4};
         }
+        solver = new MazeSolver(raw, door_times);
+        game = new GameRunner(displayer, raw, solver.minimumMoves(), door_times);
+        updateHash(raw);
       }
 
       function restartGame() {
         game.restart();
+      }
+
+      function solveGameAnimated(path, frame) {
+        if (frame >= path.length) {
+          return;
+        }
+        game.move(path[frame]);
+        setTimeout(function() { solveGameAnimated(path, frame+1); }, 200);
+      }
+
+      function solveGame() {
+        game.restart();
+        console.log(solver.path());
+        solveGameAnimated(solver.path(), 0);
       }
 
       function clickScreen(event) {
@@ -98,6 +113,9 @@
       </div>
       <div>
         <a href="#" onclick="javascript:restartGame()">Restart</a>
+      </div>
+      <div>
+        <a href="#" onclick="javascript:solveGame()">Solve</a>
       </div>
       <div>
         <a id="edit_level" href="#" target="_blank">Edit this level</a>
