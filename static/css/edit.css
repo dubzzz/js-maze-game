@@ -1,0 +1,15 @@
+.game_elements > div
+{
+	padding: 5px;
+	display: inline-block;
+}
+.game_element
+{
+	padding: 7px;
+}
+
+.game_element[data-selected]
+{
+	padding: 5px;
+	border: 2px red solid;
+}

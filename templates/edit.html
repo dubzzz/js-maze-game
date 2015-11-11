@@ -1,0 +1,70 @@
+<html>
+  <head>
+    <title>The Maze Game</title>
+    <meta name="description" content="Puzzle-game where the solver as to find a path from departure to end in limited amount of mouvments, developed by Nicolas DUBIEN" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="robots" content="index, follow" />
+      
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    
+    <link href="/static/css/edit.css" type="text/css" rel="stylesheet" media="all" />
+
+    <script src="/static/node/MapReader.js"></script>
+    <script src="/static/js/WebDisplayer.js"></script>
+    <script src="/static/js/WebEditor.js"></script>
+
+    <script>
+      var WebDisplayer = MazeGame.WebDisplayer;
+      var WebEditor = MazeGame.WebEditor;
+
+      var editor = undefined;
+      var selected = undefined;
+
+      function resizeEditor() {
+        var width = document.getElementById('board_width').value;
+        var height = document.getElementById('board_height').value;
+        if (editor === undefined) {
+          var displayer = new WebDisplayer(document.getElementById('screen'), undefined);
+          editor = new WebEditor(displayer, width, height);
+        }
+        else {
+          editor.resize(width, height);
+        }
+      }
+
+      function select(choosen, value) {
+        selected = value;
+
+        var elts = document.getElementsByClassName("game_element");
+        for (var i = 0 ; i < elts.length ; ++i) {
+          elts[i].removeAttribute("data-selected");
+        }
+        choosen.setAttribute("data-selected", undefined);
+      }
+    </script>
+  </head>
+  <body onload="javascript:resizeEditor()">
+    <div class="container">
+      <div id="game">
+        <canvas id="screen" height="0" width="0"></canvas>
+      </div>
+      <div id="game_config">
+        <div class="game_parameter">
+          <span>Width: </span>
+          <input id="board_width" type="number" name="width" min="1" max="20" value="5" onchange="javascript:resizeEditor()" />
+        </div>
+        <div class="game_parameter">
+          <span>Height: </span>
+          <input id="board_height" type="number" name="height" min="1" max="20" value="5" onchange="javascript:resizeEditor()" />
+        </div>
+        <div class="game_elements">
+          <div><img class="game_element" src="/static/img/start.png" onclick="javascript:select(this, 98)" /></div>
+          <div><img class="game_element" src="/static/img/end.png" onclick="javascript:select(this, 99)" /></div>
+          <div><img class="game_element" src="/static/img/path.png" onclick="javascript:select(this, 0)" /></div>
+          <div><img class="game_element" src="/static/img/wall.png" onclick="javascript:select(this, 97)" /></div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
