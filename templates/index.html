@@ -52,6 +52,10 @@
         }
       }
 
+      function restartGame() {
+        game.restart();
+      }
+
       function clickScreen(event) {
         if (event.button == 0) {
           game.moveClick(event);
@@ -91,6 +95,9 @@
         <script type="text/javascript">
           document.getElementById('screen').addEventListener("click", clickScreen);
         </script>
+      </div>
+      <div>
+        <a href="#" onclick="javascript:restartGame()">Restart</a>
       </div>
       <div>
         <a id="edit_level" href="#" target="_blank">Edit this level</a>
