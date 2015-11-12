@@ -21,6 +21,7 @@
       var MazeSolver = MazeGame.MazeSolver;
       var game = undefined;
       var solver = undefined;
+      var last_hash = undefined;
 
       function updateHash(raw_data) {
         var map_strings = MazeGame.rawDataToStrings(raw_data);
@@ -29,8 +30,12 @@
       }
 
       var initGame = function() {
-        var displayer = new WebDisplayer(document.getElementById('screen'), document.getElementById('more'));
         var hash = window.location.hash.substring(1);
+        if (hash == last_hash) {
+          return;
+        }
+
+        var displayer = new WebDisplayer(document.getElementById('screen'), document.getElementById('more'));
         var map_strings = hash.split(",");
 
         var raw = undefined;
@@ -109,6 +114,7 @@
         </div>
         <script type="text/javascript">
           document.getElementById('screen').addEventListener("click", clickScreen);
+          window.onhashchange = initGame;
         </script>
       </div>
       <div>
