@@ -96,15 +96,15 @@ var WebDisplayer = function(screen_canvas, info_canvas) {
 	};
 
 	this.refreshLife = function(remaining_lifes, total_lifes) {
-		if (total_lifes < 0) {
-			return;
-		}
 		var canvas = info_canvas_.getElementsByClassName("gamerunner-life")[0];
 		canvas.width = LIFE_SIZE;
 		canvas.height = LIFE_SIZE;
 		var ctx = canvas.getContext("2d");
 		ctx.fillStyle = "#ffffff";
 		ctx.fillRect(0, 0, LIFE_SIZE, LIFE_SIZE);
+		if (total_lifes < 0) {
+			return;
+		}
 		ctx.beginPath();
 		ctx.strokeStyle = "#000000";
 		ctx.lineWidth = 5;
