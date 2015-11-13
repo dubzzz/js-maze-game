@@ -35,10 +35,20 @@ var MazeSolver = function(raw_data, door_times) {
 	var self = this;
 	var miniPath = undefined;
 	var miniMoves = -1;
+	var numTotalChoices = 0;
+	var numTotalTests = 0;
 	var door_times_ = {};
 
 	this.minimumMoves = function() {
 		return miniMoves;
+	};
+
+	this.totalChoices = function() {
+		return numTotalChoices;
+	};
+
+	this.totalTests = function() {
+		return numTotalTests;
 	};
 
 	this.path = function() {
@@ -124,7 +134,7 @@ var MazeSolver = function(raw_data, door_times) {
 		miniPath.reverse();
 	};
 
-	var pushIf = function(direction, cell_x, cell_y, cell_dist, size_x, size_y, popped_level, popped_doors, doors_keys, map, helper, button_to_id, door_to_id, reversed_to_id) {
+	var pushIf = function(direction, cell_x, cell_y, cell_dist, size_x, size_y, popped_level, popped_doors, doors_keys, map, helper, button_to_id, door_to_id, reversed_to_id, size) {
 		if (allowed(cell_x, cell_y, size_x, size_y, popped_doors, map, helper, door_to_id, reversed_to_id)) {
 			var cell_doors = descreasedDoors(doors_keys, popped_doors);
 			if (map[cell_y][cell_x] == 'b') {
@@ -194,6 +204,7 @@ var MazeSolver = function(raw_data, door_times) {
 
 		var elts = new Heap();
 		elts.push({dist: 0, x: start_pos[0], y: start_pos[1], doors: allClosedDoors(doors_keys), level: 0});
+		numTotalChoices += 1;
 
 		var popped = undefined;
 		while (popped = elts.pop()) {
@@ -203,6 +214,8 @@ var MazeSolver = function(raw_data, door_times) {
 			var popped_level = popped['level'];
 			
 			var cell_dist = popped['dist'] +1;
+			++numTotalTests;
+			var before = elts.size();
 			
 			if (! pushIf(RIGHT, popped_x +1, popped_y, cell_dist, size_x, size_y, popped_level, popped_doors, doors_keys, map, helper, button_to_id, door_to_id, reversed_to_id)) {
 				return cell_dist;
@@ -216,6 +229,7 @@ var MazeSolver = function(raw_data, door_times) {
 			if (! pushIf(TOP, popped_x, popped_y -1, cell_dist, size_x, size_y, popped_level, popped_doors, doors_keys, map, helper, button_to_id, door_to_id, reversed_to_id)) {
 				return cell_dist;
 			}
+			numTotalChoices += elts.size() - before;
 		}
 	}
 };
