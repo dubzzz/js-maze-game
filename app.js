@@ -1,4 +1,4 @@
-#!/usr/bin/node
+#!/usr/bin/nodejs
 
 var express = require('express');
 var app = express(),
